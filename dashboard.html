@@ -4,392 +4,478 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Design Marketing (DES) — Painel Integrado Jira JQL & Rovo</title>
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <!-- SheetJS (Lê CSV e Excel .xlsx nativamente) -->
+  <!-- SheetJS (Leitor Universal CSV/XLSX) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- Google Fonts: Inter & JetBrains Mono -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            surface: '#F8FAFC',
-            slateDeep: '#0F172A',
-            indigoBrand: '#4F46E5',
-            violetBrand: '#7C3AED',
-            emeraldBrand: '#059669',
-            skyBrand: '#0284C7',
-          }
-        }
-      }
-    }
-  </script>
 
   <style>
-    body { background-color: #F8FAFC; color: #0F172A; }
+    :root {
+      --bg-surface: #F8FAFC;
+      --bg-dark: #0F172A;
+      --bg-card: #FFFFFF;
+      --border-color: #E2E8F0;
+      --text-primary: #0F172A;
+      --text-muted: #475569;
+      --text-light: #94A3B8;
+      --indigo: #4F46E5;
+      --indigo-soft: #EEF2FF;
+      --violet: #7C3AED;
+      --violet-soft: #F5F3FF;
+      --emerald: #059669;
+      --emerald-soft: #ECFDF5;
+      --sky: #0284C7;
+      --sky-soft: #F0F9FF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    code, .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* HEADER */
+    .top-header {
+      background-color: var(--bg-dark);
+      color: #FFFFFF;
+      border-bottom: 1px solid #1E293B;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .header-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand-group { display: flex; align-items: center; gap: 14px; }
+    .brand-logo {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      color: #FCD34D;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .badge-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 3px; }
+    .pill-emerald {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+      padding: 2px 10px; border-radius: 999px;
+      background: rgba(5, 150, 105, 0.22); color: #6EE7B7; border: 1px solid rgba(5, 150, 105, 0.4);
+    }
+    .pill-slate {
+      font-size: 11px; padding: 2px 10px; border-radius: 999px;
+      background: #1E293B; color: #CBD5E1;
+    }
+    .header-title { font-size: 19px; font-weight: 700; color: #FFFFFF; }
+
+    /* BUTTONS */
+    .actions-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .mode-switcher {
+      background: #1E293B; padding: 4px; border-radius: 12px; border: 1px solid #334155;
+      display: flex; gap: 4px;
+    }
+    .btn {
+      font-family: inherit; font-size: 12px; font-weight: 600;
+      padding: 8px 14px; border-radius: 10px; cursor: pointer;
+      border: 1px solid transparent; transition: all 0.15s ease;
+      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+    }
+    .btn-mode-active { background: var(--indigo); color: #FFFFFF; }
+    .btn-mode-inactive { background: transparent; color: #CBD5E1; }
+    .btn-mode-inactive:hover { color: #FFFFFF; }
+    .btn-dark { background: #1E293B; color: #E2E8F0; border-color: #334155; }
+    .btn-dark:hover { background: #334155; }
+    .btn-emerald { background: var(--emerald); color: #FFFFFF; }
+    .btn-emerald:hover { background: #047857; }
+    .btn-outline { background: #FFFFFF; color: var(--text-muted); border-color: var(--border-color); }
+    .btn-outline:hover { background: #F1F5F9; }
+
+    /* MAIN CONTAINER */
+    .main-container {
+      max-width: 1600px; width: 100%; margin: 0 auto;
+      padding: 24px; display: flex; flex-direction: column; gap: 20px; flex: 1;
+    }
+
+    /* BENTO CARD */
     .bento-card {
-      background: #FFFFFF;
-      border: 1px solid #E2E8F0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
       border-radius: 16px;
+      padding: 20px;
       box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
-      transition: all 0.2s ease;
     }
-    .bento-card:hover {
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+
+    /* BANNER */
+    .hero-banner {
+      background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%);
+      color: #FFFFFF; border: none;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
     }
-    .drop-active {
-      border-color: #4F46E5 !important;
-      background-color: #EEF2FF !important;
+    .hero-banner.drop-active { outline: 3px dashed #818CF8; background: #1E1B4B; }
+    .hero-text { max-width: 820px; font-size: 13.5px; color: #CBD5E1; }
+    .hero-steps { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+    .step-box {
+      padding: 8px 12px; border-radius: 8px;
+      background: rgba(30, 41, 59, 0.9); border: 1px solid #334155; color: #E2E8F0;
     }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #F1F5F9; }
-    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+    .step-box-highlight {
+      padding: 8px 12px; border-radius: 8px;
+      background: rgba(5, 150, 105, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); color: #6EE7B7; font-weight: 600;
+    }
+
+    /* FILTERS */
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px; align-items: end;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 5px; }
+    .filter-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-light); }
+    .filter-input {
+      font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text-primary);
+      background: #F8FAFC; border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 8px 12px; width: 100%; outline: none;
+    }
+    .filter-input:focus { border-color: var(--indigo); background: #FFFFFF; }
+
+    /* KPI GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .kpi-card { border-top-width: 4px; }
+    .kpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .kpi-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-light); }
+    .kpi-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; }
+    .kpi-value { font-size: 30px; font-weight: 700; line-height: 1.1; }
+    .kpi-sub { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+    /* CHARTS GRID */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 5fr 4fr 3fr;
+      gap: 16px;
+    }
+    @media (max-width: 1150px) {
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+    .chart-header { margin-bottom: 12px; }
+    .chart-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .chart-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .chart-box { position: relative; height: 290px; width: 100%; }
+
+    /* TABLE */
+    .table-card { padding: 0; overflow: hidden; }
+    .table-header {
+      padding: 18px 20px; border-bottom: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .table-scroll { overflow-x: auto; max-height: 440px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    thead { background: #F8FAFC; position: sticky; top: 0; z-index: 5; border-bottom: 1px solid var(--border-color); }
+    th { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); padding: 12px 16px; white-space: nowrap; }
+    td { font-size: 13px; padding: 12px 16px; border-bottom: 1px solid #F1F5F9; vertical-align: middle; }
+    tr:hover td { background: #F8FAFC; }
+
+    .status-pill {
+      display: inline-block; padding: 3px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 600; white-space: nowrap;
+    }
+    .epic-badge {
+      display: inline-block; padding: 3px 8px; border-radius: 6px;
+      background: #F1F5F9; color: #334155; font-size: 12px; font-weight: 500;
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65);
+      display: none; align-items: center; justify-content: center; padding: 16px; z-index: 50;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: #FFFFFF; border-radius: 16px; max-width: 760px; width: 100%;
+      overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+    .modal-head {
+      background: var(--bg-dark); color: #FFFFFF; padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-body { padding: 20px 24px; max-height: 75vh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+    .code-block {
+      background: var(--bg-dark); color: #F8FAFC; padding: 12px; border-radius: 8px;
+      font-size: 12px; overflow-x: auto; margin-top: 6px;
+    }
   </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col">
+<body>
 
-  <!-- TOP EXECUTIVE HEADER -->
-  <header class="bg-slateDeep text-white border-b border-slate-800 sticky top-0 z-30">
-    <div class="max-w-[1640px] mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-      
-      <div class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-bold text-base font-mono">
-          DES
-        </div>
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <div class="brand-logo mono">DES</div>
         <div>
-          <div class="flex items-center gap-2">
-            <span class="text-[11px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-emeraldBrand/20 text-emerald-300 border border-emeraldBrand/30">
-              Space: Design Marketing • Rovo + JQL
-            </span>
-            <span id="dataSourceBadge" class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300">
-              Espelho do Board Ativo
-            </span>
+          <div class="badge-row">
+            <span class="pill-emerald">Space: Design Marketing • Rovo + JQL</span>
+            <span id="dataSourceBadge" class="pill-slate mono">Espelho do Board Ativo</span>
           </div>
-          <h1 class="text-xl font-bold tracking-tight text-white mt-0.5">
-            Visão Integrada do Fluxo, Épicos & Capacidade da Equipe
-          </h1>
+          <h1 class="header-title">Visão Integrada do Fluxo, Épicos & Capacidade da Equipe</h1>
         </div>
       </div>
 
-      <!-- VIEW SWITCHER & ACTIONS -->
-      <div class="flex flex-wrap items-center gap-2.5">
-        <div class="bg-slate-800 p-1 rounded-xl border border-slate-700 flex items-center text-xs font-semibold">
-          <button id="btnViewTasks" onclick="switchDatasetMode('TASKS')" class="px-3 py-1.5 rounded-lg bg-indigoBrand text-white transition">
-            Demandas do Board (Fluxo)
-          </button>
-          <button id="btnViewEpics" onclick="switchDatasetMode('EPICS')" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition">
-            Mapa dos 41 Épicos (CSV)
-          </button>
+      <div class="actions-row">
+        <div class="mode-switcher">
+          <button id="btnViewTasks" class="btn btn-mode-active" onclick="switchDatasetMode('TASKS')">Demandas do Board</button>
+          <button id="btnViewEpics" class="btn btn-mode-inactive" onclick="switchDatasetMode('EPICS')">Mapa dos 41 Épicos</button>
         </div>
 
-        <button onclick="toggleJqlModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center gap-2 transition">
-          <span>⚡</span> Comandos JQL & Rovo
-        </button>
+        <button class="btn btn-dark" onclick="toggleJqlModal()">⚡ Comandos JQL & Rovo</button>
+        <button class="btn btn-dark" onclick="downloadCurrentCSV()">📥 Baixar CSV Modelo</button>
 
-        <button onclick="downloadCurrentCSV()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center gap-2 transition">
-          <span>📥</span> Baixar CSV Modelo (DES)
-        </button>
-
-        <label for="fileInput" class="cursor-pointer px-4 py-2 rounded-xl bg-emeraldBrand hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition">
-          <span>📂</span> Subir CSV / Excel do Jira
-          <input id="fileInput" type="file" accept=".csv,.xlsx,.xls" class="hidden" onchange="handleFileUpload(event)" />
+        <label for="fileInput" class="btn btn-emerald">
+          📂 Subir CSV / Excel do Jira
+          <input id="fileInput" type="file" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFileUpload(event)" />
         </label>
       </div>
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
-  <main class="max-w-[1640px] w-full mx-auto px-6 py-6 flex-1 space-y-6">
+  <!-- MAIN -->
+  <main class="main-container">
 
-    <!-- BANNER DRAG & DROP -->
-    <section id="dropZone" class="bento-card p-4 bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950 text-white border-none">
-      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-        <div class="space-y-1">
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">Complementaridade na Rotina • Design Marketing (DES)</span>
-          </div>
-          <p class="text-sm text-slate-300 max-w-4xl">
-            Use o chat do <strong>Jira Rovo</strong> para perguntas rápidas do dia a dia e os filtros <strong>JQL</strong> para baixar a listagem completa do board <strong>Design Marketing</strong> em CSV/Excel. Basta soltar o arquivo exportado aqui para atualizar os gráficos por <strong>Épico, Status, Frente (`[ECOM]`, `[Trade]`, `[Social]`) e Distribuição do Time</strong>.
-          </p>
+    <!-- HERO BANNER -->
+    <section id="dropZone" class="bento-card hero-banner">
+      <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#A5B4FC; margin-bottom:4px;">
+          ● Complementaridade na Rotina • Design Marketing (DES)
         </div>
-
-        <div class="flex flex-wrap items-center gap-2 text-xs font-mono shrink-0">
-          <div class="px-3 py-2 rounded-lg bg-slate-800/90 border border-slate-700 text-slate-300">
-            1. Filtro JQL no Jira
-          </div>
-          <span class="text-slate-500">→</span>
-          <div class="px-3 py-2 rounded-lg bg-slate-800/90 border border-slate-700 text-slate-300">
-            2. Botão "Exportar CSV"
-          </div>
-          <span class="text-slate-500">→</span>
-          <div class="px-3 py-2 rounded-lg bg-emeraldBrand/20 border border-emeraldBrand/40 text-emerald-300 font-semibold">
-            3. Solte o CSV aqui
-          </div>
-        </div>
+        <p class="hero-text">
+          Use o chat do <strong>Jira Rovo</strong> para perguntas rápidas do dia a dia e os filtros <strong>JQL</strong> (ou a aba <em>List</em>) para baixar a listagem completa do board <strong>Design Marketing</strong> em CSV. Basta soltar o arquivo aqui para atualizar os gráficos instantaneamente.
+        </p>
+      </div>
+      <div class="hero-steps mono">
+        <span class="step-box">1. Aba List ou JQL</span>
+        <span>→</span>
+        <span class="step-box">2. Exportar CSV</span>
+        <span>→</span>
+        <span class="step-box-highlight">3. Arraste o CSV aqui</span>
       </div>
     </section>
 
-    <!-- FILTERS BAR -->
-    <section class="bento-card p-4 flex flex-wrap items-center justify-between gap-4">
-      <div class="flex flex-wrap items-center gap-3 flex-1">
-        <div class="flex flex-col">
-          <label class="text-[11px] font-bold uppercase text-slate-400 mb-1">Épico / Marca Associada</label>
-          <select id="filterEpic" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-indigoBrand max-w-[260px]">
+    <!-- FILTERS -->
+    <section class="bento-card">
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label">Épico / Marca Associada</label>
+          <select id="filterEpic" class="filter-input" onchange="applyFilters()">
             <option value="ALL">Todos os Épicos</option>
           </select>
         </div>
-
-        <div class="flex flex-col">
-          <label class="text-[11px] font-bold uppercase text-slate-400 mb-1">Coluna do Board (Status)</label>
-          <select id="filterStatus" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-indigoBrand">
+        <div class="filter-group">
+          <label class="filter-label">Coluna do Board (Status)</label>
+          <select id="filterStatus" class="filter-input" onchange="applyFilters()">
             <option value="ALL">Todas as Colunas</option>
           </select>
         </div>
-
-        <div class="flex flex-col">
-          <label class="text-[11px] font-bold uppercase text-slate-400 mb-1">Categoria de Status</label>
-          <select id="filterCategory" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-indigoBrand">
+        <div class="filter-group">
+          <label class="filter-label">Categoria de Status</label>
+          <select id="filterCategory" class="filter-input" onchange="applyFilters()">
             <option value="ALL">Todas as Categorias</option>
           </select>
         </div>
-
-        <div class="flex flex-col">
-          <label class="text-[11px] font-bold uppercase text-slate-400 mb-1">Responsável (Assignee)</label>
-          <select id="filterAssignee" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-indigoBrand">
+        <div class="filter-group">
+          <label class="filter-label">Responsável (Assignee)</label>
+          <select id="filterAssignee" class="filter-input" onchange="applyFilters()">
             <option value="ALL">Todo o Time</option>
           </select>
         </div>
-
-        <div class="flex flex-col flex-1 min-w-[200px]">
-          <label class="text-[11px] font-bold uppercase text-slate-400 mb-1">Busca Rápida (DES-XXXX, [ECOM], [Trade], PNLD...)</label>
-          <input id="filterSearch" type="text" oninput="applyFilters()" placeholder="Digite código DES, tag ou título..." class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm text-slate-700 focus:outline-none focus:border-indigoBrand" />
+        <div class="filter-group">
+          <label class="filter-label">Busca Rápida (DES, [ECOM], [Trade]...)</label>
+          <input id="filterSearch" type="text" class="filter-input" oninput="applyFilters()" placeholder="Digite código, tag ou título..." />
         </div>
-      </div>
-
-      <div class="flex items-center gap-2 self-end">
-        <button onclick="resetFilters()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 border border-slate-200 transition">
-          Limpar Filtros
-        </button>
+        <div style="display:flex; justify-content:flex-end;">
+          <button class="btn btn-outline" onclick="resetFilters()">Limpar Filtros</button>
+        </div>
       </div>
     </section>
 
-    <!-- KPI ROW (ESPELHO REAL DO BOARD DESIGN MARKETING) -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-      <!-- KPI 1 -->
-      <div class="bento-card p-5 border-t-4 border-t-indigoBrand">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Itens no Recorte</span>
-          <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-indigo-50 text-indigoBrand">Board DES</span>
+    <!-- KPIS -->
+    <section class="kpi-grid">
+      <div class="bento-card kpi-card" style="border-top-color: var(--indigo);">
+        <div class="kpi-top">
+          <span class="kpi-label">Itens no Recorte</span>
+          <span class="kpi-tag mono" style="background:var(--indigo-soft); color:var(--indigo);">Board DES</span>
         </div>
-        <div class="mt-2 flex items-baseline gap-2">
-          <span id="kpiTotal" class="text-3xl font-bold text-slateDeep">0</span>
-          <span class="text-xs text-slate-500">registros</span>
-        </div>
-        <p id="kpiSub1" class="text-xs text-slate-500 mt-1.5">
-          1.116 concluídos no histórico geral do board
-        </p>
+        <div class="kpi-value" id="kpiTotal">0</div>
+        <div class="kpi-sub" id="kpiSub1">1.116 concluídos no histórico geral</div>
       </div>
 
-      <!-- KPI 2 -->
-      <div class="bento-card p-5 border-t-4 border-t-skyBrand">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Backlog & Priorizado</span>
-          <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-sky-50 text-skyBrand">Para Fazer</span>
+      <div class="bento-card kpi-card" style="border-top-color: var(--sky);">
+        <div class="kpi-top">
+          <span class="kpi-label">Backlog & Priorizado</span>
+          <span class="kpi-tag" style="background:var(--sky-soft); color:var(--sky);">Para Fazer</span>
         </div>
-        <div class="mt-2 flex items-baseline gap-2">
-          <span id="kpiToDo" class="text-3xl font-bold text-slateDeep">0</span>
-          <span class="text-xs text-slate-500">na fila</span>
-        </div>
-        <p id="kpiSub2" class="text-xs text-slate-500 mt-1.5">
-          Design + Copy & Social priorizados
-        </p>
+        <div class="kpi-value" id="kpiToDo">0</div>
+        <div class="kpi-sub">Design + Copy & Social na fila</div>
       </div>
 
-      <!-- KPI 3 -->
-      <div class="bento-card p-5 border-t-4 border-t-violetBrand">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Em Produção & Saída</span>
-          <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-violet-50 text-violetBrand">Andamento</span>
+      <div class="bento-card kpi-card" style="border-top-color: var(--violet);">
+        <div class="kpi-top">
+          <span class="kpi-label">Em Produção & Saída</span>
+          <span class="kpi-tag" style="background:var(--violet-soft); color:var(--violet);">Andamento</span>
         </div>
-        <div class="mt-2 flex items-baseline gap-2">
-          <span id="kpiInProgress" class="text-3xl font-bold text-violetBrand">0</span>
-          <span class="text-xs text-slate-500">ativos</span>
-        </div>
-        <p id="kpiSub3" class="text-xs text-slate-500 mt-1.5">
-          Andamento + Postar/Disparar + Gráfica
-        </p>
+        <div class="kpi-value" id="kpiInProgress" style="color:var(--violet);">0</div>
+        <div class="kpi-sub">Andamento + Postar/Disparar + Gráfica</div>
       </div>
 
-      <!-- KPI 4 -->
-      <div class="bento-card p-5 border-t-4 border-t-emeraldBrand">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Validação & Ajustes</span>
-          <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emeraldBrand">Aprovação</span>
+      <div class="bento-card kpi-card" style="border-top-color: var(--emerald);">
+        <div class="kpi-top">
+          <span class="kpi-label">Validação & Ajustes</span>
+          <span class="kpi-tag" style="background:var(--emerald-soft); color:var(--emerald);">Aprovação</span>
         </div>
-        <div class="mt-2 flex items-baseline gap-2">
-          <span id="kpiValidation" class="text-3xl font-bold text-emeraldBrand">0</span>
-          <span class="text-xs text-slate-500">em retorno</span>
-        </div>
-        <p id="kpiSub4" class="text-xs text-slate-500 mt-1.5">
-          Em Validação + Fazer Ajustes + Revisão
-        </p>
+        <div class="kpi-value" id="kpiValidation" style="color:var(--emerald);">0</div>
+        <div class="kpi-sub">Em Validação + Fazer Ajustes</div>
       </div>
 
-      <!-- KPI 5 -->
-      <div class="bento-card p-5 border-t-4 border-t-slate-400">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Stand-By & Arquivo</span>
-          <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600">Pausados</span>
+      <div class="bento-card kpi-card" style="border-top-color: #64748B;">
+        <div class="kpi-top">
+          <span class="kpi-label">Stand-By & Arquivo</span>
+          <span class="kpi-tag" style="background:#F1F5F9; color:#475569;">Pausados</span>
         </div>
-        <div class="mt-2 flex items-baseline gap-2">
-          <span id="kpiStandby" class="text-3xl font-bold text-slate-600">0</span>
-          <span class="text-xs text-slate-500">itens</span>
-        </div>
-        <p id="kpiSub5" class="text-xs text-slate-500 mt-1.5">
-          Stand-By + Cancelados E-commerce
-        </p>
+        <div class="kpi-value" id="kpiStandby" style="color:#475569;">0</div>
+        <div class="kpi-sub">Stand-By + Cancelados E-commerce</div>
       </div>
     </section>
 
-    <!-- CHARTS ROW (BENTO GRID 12 COLS) -->
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-      
-      <!-- CHART 1: VOLUME POR COLUNA REAL DO BOARD (5 COLS) -->
-      <div class="bento-card p-5 lg:col-span-5 flex flex-col">
-        <div class="mb-3">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-indigoBrand">Espelho das Colunas do Board</span>
-          <h2 class="text-base font-bold text-slateDeep">Distribuição por Etapa do Fluxo (Status)</h2>
+    <!-- CHARTS -->
+    <section class="charts-grid">
+      <div class="bento-card">
+        <div class="chart-header">
+          <div class="chart-eyebrow" style="color:var(--indigo);">Espelho das Colunas do Board</div>
+          <div class="chart-title">Distribuição por Etapa do Fluxo (Status)</div>
         </div>
-        <div class="relative flex-1 min-h-[290px]">
+        <div class="chart-box">
           <canvas id="chartStatusColumns"></canvas>
         </div>
       </div>
 
-      <!-- CHART 2: TOP ÉPICOS / MARCAS DEMANDANTES (4 COLS) -->
-      <div class="bento-card p-5 lg:col-span-4 flex flex-col">
-        <div class="mb-3">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-violetBrand">Agrupamento por Épico</span>
-          <h2 class="text-base font-bold text-slateDeep">Concentração de Demandas por Épico / Frente</h2>
+      <div class="bento-card">
+        <div class="chart-header">
+          <div class="chart-eyebrow" style="color:var(--violet);">Agrupamento por Épico</div>
+          <div class="chart-title">Concentração por Épico / Marca</div>
         </div>
-        <div class="relative flex-1 min-h-[290px]">
+        <div class="chart-box">
           <canvas id="chartEpics"></canvas>
         </div>
       </div>
 
-      <!-- CHART 3: TEAM WORKLOAD (FIEL AO PRINT DO JIRA SUMMARY - 3 COLS) -->
-      <div class="bento-card p-5 lg:col-span-3 flex flex-col">
-        <div class="mb-3">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-emeraldBrand">Capacidade da Equipe</span>
-          <h2 class="text-base font-bold text-slateDeep">Team Workload (Distribuição)</h2>
+      <div class="bento-card">
+        <div class="chart-header">
+          <div class="chart-eyebrow" style="color:var(--emerald);">Capacidade da Equipe</div>
+          <div class="chart-title">Team Workload (Distribuição)</div>
         </div>
-        <div class="relative flex-1 min-h-[290px]">
+        <div class="chart-box">
           <canvas id="chartWorkload"></canvas>
         </div>
       </div>
-
     </section>
 
-    <!-- COMPLETE TABLE -->
-    <section class="bento-card overflow-hidden">
-      <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
+    <!-- TABLE -->
+    <section class="bento-card table-card">
+      <div class="table-header">
         <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-indigoBrand">Listagem Completa sem Corte de Linhas</span>
-          <h2 id="tableTitle" class="text-base font-bold text-slateDeep">Itens Mapeados no Espaço Design Marketing (DES)</h2>
+          <div class="chart-eyebrow" style="color:var(--indigo);">Listagem Completa sem Corte de Linhas</div>
+          <div class="chart-title" id="tableTitle">Itens Mapeados no Espaço Design Marketing (DES)</div>
         </div>
-        <span id="tableCountLabel" class="text-xs font-mono bg-slate-100 text-slate-600 px-3 py-1 rounded-full">
-          Exibindo 0 registros
-        </span>
+        <span id="tableCountLabel" class="pill-slate mono" style="background:#F1F5F9; color:#334155;">Exibindo 0 registros</span>
       </div>
-
-      <div class="overflow-x-auto max-h-[460px]">
-        <table class="w-full text-left border-collapse">
-          <thead class="bg-slate-50 sticky top-0 z-10 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-500">
+      <div class="table-scroll">
+        <table>
+          <thead>
             <tr>
-              <th class="py-3 px-4">Chave</th>
-              <th class="py-3 px-4">Resumo / Demanda</th>
-              <th class="py-3 px-4">Épico / Marca Associada</th>
-              <th class="py-3 px-4">Coluna (Status)</th>
-              <th class="py-3 px-4">Categoria de Status</th>
-              <th class="py-3 px-4">Frente Identificada</th>
-              <th class="py-3 px-4">Responsável</th>
-              <th class="py-3 px-4">Data / Prazo</th>
+              <th>Chave</th>
+              <th>Resumo / Demanda</th>
+              <th>Épico / Marca Associada</th>
+              <th>Coluna (Status)</th>
+              <th>Categoria</th>
+              <th>Frente Identificada</th>
+              <th>Responsável</th>
+              <th>Data / Prazo</th>
             </tr>
           </thead>
-          <tbody id="ticketTableBody" class="divide-y divide-slate-100 text-sm text-slate-700">
-            <!-- Populated via JS -->
-          </tbody>
+          <tbody id="ticketTableBody"></tbody>
         </table>
       </div>
     </section>
 
   </main>
 
-  <!-- MODAL: COMANDOS JQL & ROVO PARA O BOARD DES -->
-  <div id="jqlModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-3xl w-full border border-slate-200 shadow-2xl overflow-hidden">
-      <div class="bg-slateDeep text-white px-6 py-4 flex items-center justify-between">
+  <!-- MODAL JQL -->
+  <div id="jqlModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-head">
         <div>
-          <span class="text-[11px] font-bold uppercase tracking-widest text-indigo-400">Faça Você Mesmo • Space: Design Marketing (DES)</span>
-          <h3 class="text-lg font-bold">Comandos Prontos para Extrair o CSV no Jira</h3>
+          <div style="font-size:11px; text-transform:uppercase; color:#A5B4FC; font-weight:700;">Faça Você Mesmo • Space: Design Marketing (DES)</div>
+          <div style="font-size:17px; font-weight:700;">Comandos Prontos para Extrair o CSV no Jira</div>
         </div>
-        <button onclick="toggleJqlModal()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+        <button class="btn btn-dark" onclick="toggleJqlModal()">✕</button>
       </div>
-
-      <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
-        <div class="p-4 rounded-xl bg-indigo-50 border border-indigo-100 text-xs text-slate-700 space-y-1">
-          <p class="font-bold text-indigoBrand uppercase">Como usar o botão nativo do Jira em 3 cliques:</p>
-          <p>1. Copie um dos comandos abaixo e cole na busca avançada do Jira (<strong>Filtros &gt; Ver todos os itens &gt; Modo JQL</strong>) ou peça ao <strong>Rovo</strong> para abrir a pesquisa.</p>
-          <p>2. No canto superior direito da tela do Jira, clique no botão padrão <strong>Exportar &gt; Exportar CSV (meus padrões)</strong>.</p>
-          <p>3. Arraste o arquivo CSV baixado para qualquer lugar deste painel.</p>
+      <div class="modal-body">
+        <div style="background:var(--indigo-soft); border:1px solid #C7D2FE; padding:12px 16px; border-radius:10px; font-size:13px;">
+          <strong>Como baixar o CSV em 3 cliques:</strong><br/>
+          1. No topo do espaço <em>Design Marketing</em>, clique na aba <strong>List</strong> (ou use o filtro JQL abaixo).<br/>
+          2. Clique no botão nativo <strong>Export &gt; Export CSV (my defaults)</strong> no canto superior direito.<br/>
+          3. Arraste o arquivo baixado para qualquer lugar deste painel.
         </div>
 
-        <div class="space-y-3">
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold uppercase text-indigoBrand">1. JQL: Todas as Demandas Ativas do Board (Sem Épicos e Sem Concluídos Antigos)</span>
-              <button onclick="copyText('jqlActive')" class="text-xs font-semibold text-indigoBrand hover:underline">Copiar JQL</button>
-            </div>
-            <code id="jqlActive" class="block font-mono text-xs bg-slateDeep text-slate-100 p-3 rounded-lg overflow-x-auto">project = "DES" AND issuetype != Epic AND statusCategory != Done ORDER BY status ASC, duedate ASC</code>
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:var(--indigo);">
+            <span>1. JQL: Demandas Ativas do Board (Sem Épicos e Sem Concluídos Antigos)</span>
+            <a href="javascript:void(0)" onclick="copyText('jqlActive')">Copiar JQL</a>
           </div>
-
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold uppercase text-emeraldBrand">2. JQL: Fechamento Mensal Completo (Incluindo Concluídos nos últimos 30 dias)</span>
-              <button onclick="copyText('jqlMonthly')" class="text-xs font-semibold text-indigoBrand hover:underline">Copiar JQL</button>
-            </div>
-            <code id="jqlMonthly" class="block font-mono text-xs bg-slateDeep text-slate-100 p-3 rounded-lg overflow-x-auto">project = "DES" AND issuetype != Epic AND (statusCategory != Done OR updated >= -30d) ORDER BY parent ASC, status ASC</code>
-          </div>
-
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold uppercase text-violetBrand">3. Prompt para o Chat do Jira Rovo (Gera a busca pronta)</span>
-              <button onclick="copyText('promptRovo')" class="text-xs font-semibold text-indigoBrand hover:underline">Copiar Prompt Rovo</button>
-            </div>
-            <code id="promptRovo" class="block font-mono text-xs bg-slateDeep text-slate-100 p-3 rounded-lg overflow-x-auto">"Rovo, monte um filtro JQL do projeto Design Marketing (DES) com todas as demandas em aberto ou concluídas neste mês, exibindo as colunas Chave, Resumo, Status, Categoria de Status, Item Pai (Épico), Responsável e Data Limite, e me dê o link para abrir na Pesquisa de Itens para eu exportar em CSV."</code>
-          </div>
+          <pre id="jqlActive" class="code-block mono">project = "DES" AND issuetype != Epic AND status != "✅ CONCLUÍDO" ORDER BY status ASC, updated DESC</pre>
         </div>
-      </div>
 
-      <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex justify-end">
-        <button onclick="toggleJqlModal()" class="px-4 py-2 rounded-xl bg-slateDeep text-white text-xs font-semibold">Fechar</button>
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:var(--emerald);">
+            <span>2. JQL: Fechamento Mensal (Ativos + Concluídos nos últimos 30 dias)</span>
+            <a href="javascript:void(0)" onclick="copyText('jqlMonthly')">Copiar JQL</a>
+          </div>
+          <pre id="jqlMonthly" class="code-block mono">project = "DES" AND issuetype != Epic AND (status != "✅ CONCLUÍDO" OR updated >= -30d) ORDER BY status ASC</pre>
+        </div>
+
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:var(--violet);">
+            <span>3. Prompt para o Chat do Jira Rovo</span>
+            <a href="javascript:void(0)" onclick="copyText('promptRovo')">Copiar Prompt</a>
+          </div>
+          <pre id="promptRovo" class="code-block mono">"Rovo, monte um filtro JQL do projeto Design Marketing (DES) com todas as demandas em aberto ou concluídas neste mês e me dê o link para abrir na Pesquisa de Itens para eu clicar em Exportar CSV."</pre>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- JAVASCRIPT ENGINE -->
+  <!-- SCRIPT -->
   <script>
-    // 1. OS 41 ÉPICOS REAIS EXTRAÍDOS DO SEU CSV
     const EPICS_FROM_CSV = [
       { key: "DES-2175", summary: "🌎 Site Órbita", epic: "🌎 Site Órbita", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
       { key: "DES-888", summary: "⛔️ CARDS EM STAND BY", epic: "⛔️ CARDS EM STAND BY", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
@@ -434,47 +520,35 @@
       { key: "DES-773", summary: "🟢 Imagens | LP Mais afiliados [E-comm] - FREELA", epic: "🟢 Imagens sites | E-commerce", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Freela", dueDate: "Concluído" }
     ];
 
-    // 2. DEMANDAS REAIS DO BOARD (EXTRAÍDAS DAS CAPTURAS DE TELA DO BOARD DES)
     const BOARD_TASKS = [
-      // BACKLOG COPY + SOCIAL
       { key: "DES-2055", summary: "[Trade] Anúncio Revista Educação/ Nov/Dez", epic: "🟡 Relações com o Mercado 2026", status: "⬛ BACKLOG COPY + SOCIAL", category: "Para Fazer", assignee: "Unassigned", dueDate: "30 Out 2026" },
       { key: "DES-2173", summary: "[ECOM] Vídeo Livros do Mês", epic: "🟢 E-commerce Novembro", status: "⬛ BACKLOG COPY + SOCIAL", category: "Para Fazer", assignee: "Unassigned", dueDate: "29 Out 2026" },
-      // BACKLOG DESIGN
       { key: "DES-2138", summary: "[Viver] Apresentação PPT - Formação final do Projeto Viver/DF", epic: "👩‍🏫 Viver", status: "⚫ BACKLOG DESIGN", category: "Para Fazer", assignee: "Unassigned", dueDate: "27 Out 2026" },
       { key: "DES-2081", summary: "[Ciclo do Saber] Temporada 2", epic: "🎙️Podcast - Ciclo do Saber", status: "⚫ BACKLOG DESIGN", category: "Para Fazer", assignee: "Unassigned", dueDate: "30 Out 2026" },
       { key: "DES-1923", summary: "[Universidade] Cantinela: ppt, gc e transições animadas", epic: "🎓Universidade Mletras", status: "⚫ BACKLOG DESIGN", category: "Para Fazer", assignee: "Unassigned", dueDate: "30 Out 2026" },
-      // PRIORIZADO DESIGN
       { key: "DES-2150", summary: "[PNLD EI] E-mail mkt 5", epic: "🟠 PNLD Literário 2026", status: "🔵 PRIORIZADO DESIGN", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "19 Out 2026" },
       { key: "DES-2061", summary: "[ECOM] Emkt Livros sobre curiosidades e aprendizados", epic: "🟢 E-commerce Outubro", status: "🔵 PRIORIZADO DESIGN", category: "Para Fazer", assignee: "Samuel Ramires", dueDate: "19 Out 2026" },
       { key: "DES-2139", summary: "[Ciclo do Saber] Thumbs temporada 2", epic: "🎙️Podcast - Ciclo do Saber", status: "🔵 PRIORIZADO DESIGN", category: "Para Fazer", assignee: "Samuel Ramires", dueDate: "19 Out 2026" },
-      // PRIORIZADO COPY + SOCIAL
       { key: "DES-2066", summary: "[ECOM] Conta de Novo - Legendagem dos vídeos - Mapa de Leitura", epic: "🟢 E-commerce Outubro", status: "🟦 PRIORIZADO COPY + SOCIAL", category: "Para Fazer", assignee: "Natalia Nogueira", dueDate: "09 Out 2026" },
       { key: "DES-2120", summary: "[ECOM] Vídeo Black Friday", epic: "🟢 E-commerce Outubro", status: "🟦 PRIORIZADO COPY + SOCIAL", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "21 Out 2026" },
       { key: "DES-2158", summary: "[Social] Ciclo do Saber Temp. 1 - Post Fotos/Backstage", epic: "⚪️ Redes Sociais", status: "🟦 PRIORIZADO COPY + SOCIAL", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "19 Out 2026" },
-      // ANDAMENTO DESIGN
       { key: "DES-2143", summary: "[Social | Novembro] ÓRBITA - 6 estáticos + 2 carrosséis + 18 desdobres Stories", epic: "⚪️ Redes Sociais", status: "🟡 ANDAMENTO DESIGN", category: "Em Andamento", assignee: "Samuel Ramires", dueDate: "19 Out 2026" },
       { key: "DES-2136", summary: "[Viver] Apresentação PPT Mato Grosso (TDAH)", epic: "👩‍🏫 Viver", status: "🟡 ANDAMENTO DESIGN", category: "Em Andamento", assignee: "Wilson Junior", dueDate: "20 Out 2026" },
-      // ANDAMENTO FREELAS
       { key: "DES-1985", summary: "[Campanha da Fraternidade 2027] E-mail", epic: "🟡 Relações com o Mercado 2026", status: "🗒️ ANDAMENTO FREELAS", category: "Em Andamento", assignee: "Unassigned", dueDate: "28 Set 2026" },
       { key: "DES-1474", summary: "[Corporativo] Criação de marcações de setores/departamentos", epic: "🔵 Corporativo", status: "🗒️ ANDAMENTO FREELAS", category: "Em Andamento", assignee: "Natalia Nogueira", dueDate: "09 Out 2026" },
       { key: "DES-2096", summary: "[Trade] Material de PDV - Jaqueiras (Recife)", epic: "🟡 Relações com o Mercado 2026", status: "🗒️ ANDAMENTO FREELAS", category: "Em Andamento", assignee: "Ana Paula Stein", dueDate: "30 Out 2026" },
-      // EM VALIDAÇÃO
       { key: "DES-2123", summary: "[ECOM] Bubbles Compra por Idade", epic: "🟢 E-commerce Outubro", status: "🟢 EM VALIDAÇÃO", category: "Em Andamento", assignee: "Wilson Junior", dueDate: "14 Out 2026" },
       { key: "DES-2146", summary: "[Amplia] Template de PPT", epic: "🤓 Faculdade Amplia", status: "🟢 EM VALIDAÇÃO", category: "Em Andamento", assignee: "Samuel Ramires", dueDate: "16 Out 2026" },
       { key: "DES-2144", summary: "[Amplia] Assinaturas de E-mail", epic: "🤓 Faculdade Amplia", status: "🟢 EM VALIDAÇÃO", category: "Em Andamento", assignee: "Samuel Ramires", dueDate: "16 Out 2026" },
       { key: "DES-2147", summary: "[Amplia] Papel timbrado", epic: "🤓 Faculdade Amplia", status: "🟢 EM VALIDAÇÃO", category: "Em Andamento", assignee: "Wilson Junior", dueDate: "16 Out 2026" },
-      // FAZER AJUSTES
       { key: "DES-2010", summary: "[Prêmio Multiverso] E-mail outubro", epic: "🔵 Prêmio Multiverso de Literatura 2026", status: "🔴 FAZER AJUSTES", category: "Em Andamento", assignee: "Wilson Junior", dueDate: "15 Out 2026" },
       { key: "DES-1971", summary: "Manual de Marca: Grupo Multiverso das Letras", epic: "🔴 Branding Multiverso das Letras", status: "🔴 FAZER AJUSTES", category: "Em Andamento", assignee: "Wilson Junior", dueDate: "09 Out 2026" },
       { key: "DES-2157", summary: "[ECOM] Banner Lançamento O lobo de cueca 2", epic: "🟢 E-commerce Outubro", status: "🔴 FAZER AJUSTES", category: "Em Andamento", assignee: "Samuel Ramires", dueDate: "16 Out 2026" },
-      // POSTAR / DISPARAR
       { key: "DES-1969", summary: "[Multiverso da Leitura] Thumb + Post + Story + GCs - 10 peças", epic: "⚪️ Redes Sociais", status: "📋 POSTAR/DISPARAR", category: "Em Andamento", assignee: "Natalia Nogueira", dueDate: "27 Out 2026" },
       { key: "DES-2070", summary: "[ECOM] Vídeo Livros do Mês", epic: "🟢 E-commerce Outubro", status: "📋 POSTAR/DISPARAR", category: "Em Andamento", assignee: "Natalia Nogueira", dueDate: "30 Set 2026" },
-      // GRÁFICA
       { key: "DES-1932", summary: "[Evento] Banner impresso | O vento ventou no alfabeto", epic: "🟡 Relações com o Mercado 2026", status: "🖨️ GRÁFICA", category: "Em Andamento", assignee: "Ana Paula Stein", dueDate: "28 Ago 2026" },
       { key: "DES-1873", summary: "[CORPORATIVO] Adesivos para portas de entrada", epic: "🔵 Corporativo", status: "🖨️ GRÁFICA", category: "Em Andamento", assignee: "Ana Paula Stein", dueDate: "13 Ago 2026" },
       { key: "DES-1914", summary: "[Trade] Lobo de Cueca: Adesivo de Amarelinha (adaptação arte)", epic: "🟡 Relações com o Mercado 2026", status: "🖨️ GRÁFICA", category: "Em Andamento", assignee: "Ana Paula Stein", dueDate: "18 Set 2026" },
-      // STAND-BY & LINKS & CANCELADOS
       { key: "DES-473", summary: "[MEMENTO] Thumbs", epic: "🟤 Memento - O poder de viver o hoje", status: "⛔ STAND-BY", category: "Para Fazer", assignee: "Natalia Nogueira", dueDate: "—" },
       { key: "DES-972", summary: "Documentação padronização LP", epic: "🟢 E-commerce Outubro", status: "⛔ STAND-BY", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "18 Mar 2026" },
       { key: "DES-646", summary: "[Interno] Atualizar SLA - Banners Multiletras", epic: "🔵 Corporativo", status: "⛔ STAND-BY", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "—" },
@@ -483,13 +557,11 @@
       { key: "DES-1649", summary: "[Ecom] Imagem whatsapp", epic: "🟠 Demandas canceladas E-commerce", status: "🚫🛒 CANCELADOS E-COMMERCE", category: "Para Fazer", assignee: "Natalia Nogueira", dueDate: "29 Jun 2026" },
       { key: "DES-450", summary: "[E-commerce] Adaptação de vídeo", epic: "🟠 Demandas canceladas E-commerce", status: "🚫🛒 CANCELADOS E-COMMERCE", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "23 Jan 2026" },
       { key: "DES-607", summary: "Novos banners páginas de categoria", epic: "🟠 Demandas canceladas E-commerce", status: "🚫🛒 CANCELADOS E-COMMERCE", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "20 Jan 2026" },
-      // CONCLUÍDOS RECENTES (AMOSTRA DO BOARD)
       { key: "DES-814", summary: "[Multiletras] Posts Bloquinho de Leitura", epic: "🟢 E-commerce Fevereiro", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "03 Fev 2026" },
       { key: "DES-2004", summary: "[PNLD 2026] E-mail roteiro de leitura", epic: "🟠 PNLD Literário 2026", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "17 Set 2026" },
       { key: "DES-2083", summary: "[PNLD 2026] E-mail sobre o autor", epic: "🟠 PNLD Literário 2026", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "30 Set 2026" }
     ];
 
-    let currentMode = 'TASKS';
     let activeDataset = [];
     let chartStatusInstance = null;
     let chartEpicsInstance = null;
@@ -501,22 +573,21 @@
     });
 
     function switchDatasetMode(mode) {
-      currentMode = mode;
       const btnTasks = document.getElementById('btnViewTasks');
       const btnEpics = document.getElementById('btnViewEpics');
 
       if (mode === 'TASKS') {
         activeDataset = [...BOARD_TASKS];
-        btnTasks.className = "px-3 py-1.5 rounded-lg bg-indigoBrand text-white transition";
-        btnEpics.className = "px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition";
-        document.getElementById('dataSourceBadge').textContent = `Fluxo do Board (${activeDataset.length} demandas mapeadas)`;
+        btnTasks.className = "btn btn-mode-active";
+        btnEpics.className = "btn btn-mode-inactive";
+        document.getElementById('dataSourceBadge').textContent = `Fluxo do Board (${activeDataset.length} demandas)`;
         document.getElementById('tableTitle').textContent = "Demandas Operacionais Mapeadas no Board Design Marketing (DES)";
       } else {
         activeDataset = [...EPICS_FROM_CSV];
-        btnEpics.className = "px-3 py-1.5 rounded-lg bg-indigoBrand text-white transition";
-        btnTasks.className = "px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition";
+        btnEpics.className = "btn btn-mode-active";
+        btnTasks.className = "btn btn-mode-inactive";
         document.getElementById('dataSourceBadge').textContent = `CSV Oficial Carregado (41 Épicos)`;
-        document.getElementById('tableTitle').textContent = "Mapa Completo dos 41 Épicos (Arquivo chave-resumo-status-categoria-.csv)";
+        document.getElementById('tableTitle').textContent = "Mapa Completo dos 41 Épicos (Design Marketing)";
       }
 
       populateFilters(activeDataset);
@@ -534,15 +605,10 @@
     }
 
     function populateFilters(items) {
-      const epics = [...new Set(items.map(i => i.epic))].sort();
-      const statuses = [...new Set(items.map(i => i.status))].sort();
-      const categories = [...new Set(items.map(i => i.category))].sort();
-      const assignees = [...new Set(items.map(i => i.assignee))].sort();
-
-      fillSelect('filterEpic', 'Todos os Épicos / Marcas', epics);
-      fillSelect('filterStatus', 'Todas as Colunas (Status)', statuses);
-      fillSelect('filterCategory', 'Todas as Categorias', categories);
-      fillSelect('filterAssignee', 'Todo o Time', assignees);
+      fillSelect('filterEpic', 'Todos os Épicos / Marcas', [...new Set(items.map(i => i.epic))].sort());
+      fillSelect('filterStatus', 'Todas as Colunas (Status)', [...new Set(items.map(i => i.status))].sort());
+      fillSelect('filterCategory', 'Todas as Categorias', [...new Set(items.map(i => i.category))].sort());
+      fillSelect('filterAssignee', 'Todo o Time', [...new Set(items.map(i => i.assignee))].sort());
     }
 
     function fillSelect(id, defaultLabel, list) {
@@ -594,27 +660,22 @@
 
     function updateKPIs(items) {
       const total = items.length;
-
       const toDo = items.filter(i => {
         const s = i.status.toUpperCase();
         return s.includes('BACKLOG') || s.includes('PRIORIZADO') || s === 'ÉPICOS';
       }).length;
-
       const inProg = items.filter(i => {
         const s = i.status.toUpperCase();
         return s.includes('ANDAMENTO') || s.includes('POSTAR') || s.includes('GRÁFICA');
       }).length;
-
       const validation = items.filter(i => {
         const s = i.status.toUpperCase();
         return s.includes('VALIDA') || s.includes('AJUSTE') || s.includes('REVIS');
       }).length;
-
       const standby = items.filter(i => {
         const s = i.status.toUpperCase();
         return s.includes('STAND') || s.includes('CANCELAD') || s.includes('LINKS');
       }).length;
-
       const done = items.filter(i => i.status.toUpperCase().includes('CONCLU') || i.category === 'Concluído').length;
 
       document.getElementById('kpiTotal').textContent = total;
@@ -626,7 +687,8 @@
     }
 
     function updateCharts(items) {
-      // 1. STATUS COLUMNS CHART
+      if (typeof Chart === 'undefined') return;
+
       const statusCounts = {};
       items.forEach(i => { statusCounts[i.status] = (statusCounts[i.status] || 0) + 1; });
       const sLabels = Object.keys(statusCounts);
@@ -638,7 +700,7 @@
         data: {
           labels: sLabels,
           datasets: [{
-            label: 'Itens na Coluna',
+            label: 'Itens',
             data: sData,
             backgroundColor: sLabels.map(l => {
               const u = l.toUpperCase();
@@ -663,7 +725,6 @@
         }
       });
 
-      // 2. TOP EPICS CHART
       const epicCounts = {};
       items.forEach(i => { epicCounts[i.epic] = (epicCounts[i.epic] || 0) + 1; });
       const sortedEpics = Object.entries(epicCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
@@ -672,9 +733,9 @@
       chartEpicsInstance = new Chart(document.getElementById('chartEpics'), {
         type: 'bar',
         data: {
-          labels: sortedEpics.map(e => e[0].length > 28 ? e[0].slice(0, 28) + '…' : e[0]),
+          labels: sortedEpics.map(e => e[0].length > 26 ? e[0].slice(0, 26) + '…' : e[0]),
           datasets: [{
-            label: 'Itens Vinculados',
+            label: 'Itens',
             data: sortedEpics.map(e => e[1]),
             backgroundColor: '#7C3AED',
             borderRadius: 6
@@ -692,19 +753,16 @@
         }
       });
 
-      // 3. TEAM WORKLOAD CHART (Reflecting real Jira Summary distribution)
       const assigneeCounts = {};
       items.forEach(i => { assigneeCounts[i.assignee || 'Unassigned'] = (assigneeCounts[i.assignee || 'Unassigned'] || 0) + 1; });
-      const aLabels = Object.keys(assigneeCounts);
-      const aData = Object.values(assigneeCounts);
 
       if (chartWorkloadInstance) chartWorkloadInstance.destroy();
       chartWorkloadInstance = new Chart(document.getElementById('chartWorkload'), {
         type: 'doughnut',
         data: {
-          labels: aLabels,
+          labels: Object.keys(assigneeCounts),
           datasets: [{
-            data: aData,
+            data: Object.values(assigneeCounts),
             backgroundColor: ['#4F46E5', '#94A3B8', '#059669', '#7C3AED', '#0284C7', '#F59E0B'],
             borderWidth: 2,
             borderColor: '#FFFFFF'
@@ -713,10 +771,8 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          cutout: '62%',
-          plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 11, font: { size: 11 } } }
-          }
+          cutout: '60%',
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 11, font: { size: 11 } } } }
         }
       });
     }
@@ -729,17 +785,15 @@
       items.forEach(item => {
         const front = detectFrontFromSummary(item.summary, item.epic);
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50/90 transition';
-
         tr.innerHTML = `
-          <td class="py-3 px-4 font-mono text-xs font-semibold text-indigoBrand whitespace-nowrap">${item.key}</td>
-          <td class="py-3 px-4 font-medium text-slateDeep max-w-md truncate" title="${item.summary}">${item.summary}</td>
-          <td class="py-3 px-4 whitespace-nowrap"><span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">${item.epic}</span></td>
-          <td class="py-3 px-4 whitespace-nowrap">${formatStatusPill(item.status)}</td>
-          <td class="py-3 px-4 whitespace-nowrap">${formatCategoryPill(item.category)}</td>
-          <td class="py-3 px-4 text-xs text-slate-600 whitespace-nowrap">${front}</td>
-          <td class="py-3 px-4 text-xs font-medium text-slate-700 whitespace-nowrap">${item.assignee}</td>
-          <td class="py-3 px-4 text-xs font-mono text-slate-500 whitespace-nowrap">${item.dueDate || '—'}</td>
+          <td class="mono" style="font-weight:600; color:var(--indigo); white-space:nowrap;">${item.key}</td>
+          <td style="font-weight:500; max-width:360px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${item.summary}">${item.summary}</td>
+          <td><span class="epic-badge">${item.epic}</span></td>
+          <td>${formatStatusPill(item.status)}</td>
+          <td>${formatCategoryPill(item.category)}</td>
+          <td style="font-size:12px; color:var(--text-muted);">${front}</td>
+          <td style="font-weight:500;">${item.assignee}</td>
+          <td class="mono" style="font-size:12px; color:var(--text-muted);">${item.dueDate || '—'}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -747,21 +801,20 @@
 
     function formatStatusPill(status) {
       const u = (status || '').toUpperCase();
-      if (u.includes('CONCLU')) return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emeraldBrand border border-emerald-200">${status}</span>`;
-      if (u.includes('VALIDA') || u.includes('AJUSTE')) return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-skyBrand border border-sky-200">${status}</span>`;
-      if (u.includes('ANDAMENTO') || u.includes('POSTAR') || u.includes('GRÁFICA')) return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-violet-50 text-violetBrand border border-violet-200">${status}</span>`;
-      if (u.includes('STAND') || u.includes('CANCEL')) return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">${status}</span>`;
-      return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 text-indigoBrand border border-indigo-200">${status}</span>`;
+      if (u.includes('CONCLU')) return `<span class="status-pill" style="background:var(--emerald-soft); color:var(--emerald);">${status}</span>`;
+      if (u.includes('VALIDA') || u.includes('AJUSTE')) return `<span class="status-pill" style="background:var(--sky-soft); color:var(--sky);">${status}</span>`;
+      if (u.includes('ANDAMENTO') || u.includes('POSTAR') || u.includes('GRÁFICA')) return `<span class="status-pill" style="background:var(--violet-soft); color:var(--violet);">${status}</span>`;
+      if (u.includes('STAND') || u.includes('CANCEL')) return `<span class="status-pill" style="background:#F1F5F9; color:#475569;">${status}</span>`;
+      return `<span class="status-pill" style="background:var(--indigo-soft); color:var(--indigo);">${status}</span>`;
     }
 
     function formatCategoryPill(cat) {
       const c = (cat || '').toLowerCase();
-      if (c.includes('conclu')) return `<span class="text-xs font-semibold text-emeraldBrand">● Concluído</span>`;
-      if (c.includes('andamento')) return `<span class="text-xs font-semibold text-indigoBrand">● Em Andamento</span>`;
-      return `<span class="text-xs font-semibold text-slate-500">● Para Fazer</span>`;
+      if (c.includes('conclu')) return `<span style="color:var(--emerald); font-weight:600; font-size:12px;">● Concluído</span>`;
+      if (c.includes('andamento')) return `<span style="color:var(--indigo); font-weight:600; font-size:12px;">● Em Andamento</span>`;
+      return `<span style="color:#64748B; font-weight:600; font-size:12px;">● Para Fazer</span>`;
     }
 
-    // UNIVERSAL CSV / XLSX UPLOAD HANDLER (ACCEPTS YOUR EXACT 4-COLUMN CSV OR FULL JIRA EXPORT)
     function handleFileUpload(event) {
       const file = event.target.files[0];
       if (file) processUploadedFile(file);
@@ -775,10 +828,7 @@
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonRows = XLSX.utils.sheet_to_json(firstSheet, { defval: "" });
 
-        if (!jsonRows.length) {
-          alert("O arquivo selecionado está vazio.");
-          return;
-        }
+        if (!jsonRows.length) return;
 
         activeDataset = jsonRows.map((row, idx) => {
           const getVal = (candidates, fallback) => {
@@ -794,7 +844,7 @@
           const key = getVal(['chave', 'issue key', 'key'], `DES-${100 + idx}`);
           const summary = getVal(['resumo', 'summary', 'título'], 'Item sem título');
           const status = getVal(['status', 'situação'], 'ÉPICOS');
-          const category = getVal(['categoria de status', 'status category', 'categoria'], 
+          const category = getVal(['categoria de status', 'status category', 'categoria'],
             status.toUpperCase().includes('CONCLU') ? 'Concluído' : 'Para Fazer'
           );
           const epic = getVal(['item pai', 'parent', 'épico', 'epic link', 'epic name', 'marca'], summary);
@@ -841,9 +891,7 @@
     }
 
     function toggleJqlModal() {
-      const modal = document.getElementById('jqlModal');
-      modal.classList.toggle('hidden');
-      modal.classList.toggle('flex');
+      document.getElementById('jqlModal').classList.toggle('open');
     }
 
     function copyText(id) {
