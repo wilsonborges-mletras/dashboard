@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Marketing (DES) — Painel Integrado Jira JQL & Rovo</title>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- SheetJS (Lê CSV e Excel .xlsx nativamente) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Tailwind compilado (estático) -->
+  <style>
+*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:Inter,sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:JetBrains Mono,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0}.top-0{top:0}.z-10{z-index:10}.z-30{z-index:30}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mb-3{margin-bottom:.75rem}.mt-0\.5{margin-top:.125rem}.mt-1\.5{margin-top:.375rem}.mt-2{margin-top:.5rem}.block{display:block}.flex{display:flex}.table{display:table}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-2{height:.5rem}.max-h-\[460px\]{max-height:460px}.max-h-\[75vh\]{max-height:75vh}.min-h-\[290px\]{min-height:290px}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-2{width:.5rem}.w-full{width:100%}.min-w-\[200px\]{min-width:200px}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-\[1640px\]{max-width:1640px}.max-w-\[260px\]{max-width:260px}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.border-collapse{border-collapse:collapse}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}.cursor-pointer{cursor:pointer}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.items-baseline{align-items:baseline}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-2\.5{gap:.625rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.space-y-1>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.25rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.25rem*var(--tw-space-y-reverse))}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.space-y-4>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem*var(--tw-space-y-reverse))}.space-y-6>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem*var(--tw-space-y-reverse))}.divide-y>:not([hidden])~:not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px*(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px*var(--tw-divide-y-reverse))}.divide-slate-100>:not([hidden])~:not([hidden]){--tw-divide-opacity:1;border-color:rgb(241 245 249/var(--tw-divide-opacity,1))}.self-end{align-self:flex-end}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis}.truncate,.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-md{border-radius:.375rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-t-4{border-top-width:4px}.border-none{border-style:none}.border-amber-400\/40{border-color:rgba(251,191,36,.4)}.border-emerald-200{--tw-border-opacity:1;border-color:rgb(167 243 208/var(--tw-border-opacity,1))}.border-emeraldBrand\/30{border-color:rgba(5,150,105,.3)}.border-emeraldBrand\/40{border-color:rgba(5,150,105,.4)}.border-indigo-100{--tw-border-opacity:1;border-color:rgb(224 231 255/var(--tw-border-opacity,1))}.border-indigo-200{--tw-border-opacity:1;border-color:rgb(199 210 254/var(--tw-border-opacity,1))}.border-sky-200{--tw-border-opacity:1;border-color:rgb(186 230 253/var(--tw-border-opacity,1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240/var(--tw-border-opacity,1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85/var(--tw-border-opacity,1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59/var(--tw-border-opacity,1))}.border-violet-200{--tw-border-opacity:1;border-color:rgb(221 214 254/var(--tw-border-opacity,1))}.border-t-emeraldBrand{--tw-border-opacity:1;border-top-color:rgb(5 150 105/var(--tw-border-opacity,1))}.border-t-indigoBrand{--tw-border-opacity:1;border-top-color:rgb(79 70 229/var(--tw-border-opacity,1))}.border-t-skyBrand{--tw-border-opacity:1;border-top-color:rgb(2 132 199/var(--tw-border-opacity,1))}.border-t-slate-400{--tw-border-opacity:1;border-top-color:rgb(148 163 184/var(--tw-border-opacity,1))}.border-t-violetBrand{--tw-border-opacity:1;border-top-color:rgb(124 58 237/var(--tw-border-opacity,1))}.bg-amber-500\/20{background-color:rgba(245,158,11,.2)}.bg-emerald-400{--tw-bg-opacity:1;background-color:rgb(52 211 153/var(--tw-bg-opacity,1))}.bg-emerald-50{--tw-bg-opacity:1;background-color:rgb(236 253 245/var(--tw-bg-opacity,1))}.bg-emeraldBrand{--tw-bg-opacity:1;background-color:rgb(5 150 105/var(--tw-bg-opacity,1))}.bg-emeraldBrand\/20{background-color:rgba(5,150,105,.2)}.bg-indigo-50{--tw-bg-opacity:1;background-color:rgb(238 242 255/var(--tw-bg-opacity,1))}.bg-indigoBrand{--tw-bg-opacity:1;background-color:rgb(79 70 229/var(--tw-bg-opacity,1))}.bg-sky-50{--tw-bg-opacity:1;background-color:rgb(240 249 255/var(--tw-bg-opacity,1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity,1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59/var(--tw-bg-opacity,1))}.bg-slate-800\/90{background-color:rgba(30,41,59,.9)}.bg-slate-900\/60{background-color:rgba(15,23,42,.6)}.bg-slateDeep{--tw-bg-opacity:1;background-color:rgb(15 23 42/var(--tw-bg-opacity,1))}.bg-violet-50{--tw-bg-opacity:1;background-color:rgb(245 243 255/var(--tw-bg-opacity,1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.bg-gradient-to-r{background-image:linear-gradient(to right,var(--tw-gradient-stops))}.from-slate-900{--tw-gradient-from:#0f172a var(--tw-gradient-from-position);--tw-gradient-to:rgba(15,23,42,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.via-slate-900{--tw-gradient-to:rgba(15,23,42,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),#0f172a var(--tw-gradient-via-position),var(--tw-gradient-to)}.to-indigo-950{--tw-gradient-to:#1e1b4b var(--tw-gradient-to-position)}.p-1{padding:.25rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-3\.5{padding-left:.875rem;padding-right:.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.text-left{text-align:left}.font-mono{font-family:JetBrains Mono,monospace}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tracking-tight{letter-spacing:-.025em}.tracking-wider{letter-spacing:.05em}.tracking-widest{letter-spacing:.1em}.text-amber-300{--tw-text-opacity:1;color:rgb(252 211 77/var(--tw-text-opacity,1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183/var(--tw-text-opacity,1))}.text-emeraldBrand{--tw-text-opacity:1;color:rgb(5 150 105/var(--tw-text-opacity,1))}.text-indigo-300{--tw-text-opacity:1;color:rgb(165 180 252/var(--tw-text-opacity,1))}.text-indigo-400{--tw-text-opacity:1;color:rgb(129 140 248/var(--tw-text-opacity,1))}.text-indigoBrand{--tw-text-opacity:1;color:rgb(79 70 229/var(--tw-text-opacity,1))}.text-skyBrand{--tw-text-opacity:1;color:rgb(2 132 199/var(--tw-text-opacity,1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249/var(--tw-text-opacity,1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240/var(--tw-text-opacity,1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity,1))}.text-slateDeep{--tw-text-opacity:1;color:rgb(15 23 42/var(--tw-text-opacity,1))}.text-violetBrand{--tw-text-opacity:1;color:rgb(124 58 237/var(--tw-text-opacity,1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgba(0,0,0,.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color)}.shadow-2xl,.shadow-sm{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.hover\:bg-emerald-500:hover{--tw-bg-opacity:1;background-color:rgb(16 185 129/var(--tw-bg-opacity,1))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity,1))}.hover\:bg-slate-50\/90:hover{background-color:rgba(248,250,252,.9)}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85/var(--tw-bg-opacity,1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.hover\:underline:hover{text-decoration-line:underline}.focus\:border-indigoBrand:focus{--tw-border-opacity:1;border-color:rgb(79 70 229/var(--tw-border-opacity,1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}@media (min-width:640px){.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:col-span-3{grid-column:span 3/span 3}.lg\:col-span-4{grid-column:span 4/span 4}.lg\:col-span-5{grid-column:span 5/span 5}.lg\:grid-cols-12{grid-template-columns:repeat(12,minmax(0,1fr))}.lg\:grid-cols-5{grid-template-columns:repeat(5,minmax(0,1fr))}.lg\:flex-row{flex-direction:row}.lg\:items-center{align-items:center}}
+  </style>
+
+  <style>
+    body { background-color: #F8FAFC; color: #0F172A; }
+    .bento-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+      transition: all 0.2s ease;
+    }
+    .bento-card:hover {
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    }
+    .drop-active {
+      border-color: #4F46E5 !important;
+      background-color: #EEF2FF !important;
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F1F5F9; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+  <!-- TOP EXECUTIVE HEADER -->
+  <header class="bg-slateDeep text-white border-b border-slate-800 sticky top-0 z-30">
+    <div class="max-w-[1640px] mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-bold text-base font-mono">
+          DES
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-emeraldBrand/20 text-emerald-300 border border-emeraldBrand/30">
+              Space: Design Marketing • Rovo + JQL
+            </span>
+            <span id="dataSourceBadge" class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300">
+              Espelho do Board Ativo
+            </span>
+          </div>
+          <h1 class="text-xl font-bold tracking-tight text-white mt-0.5">
+            Visão Integrada do Fluxo, Épicos & Capacidade da Equipe
+          </h1>
+        </div>
+      </div>
+
+      <!-- VIEW SWITCHER & ACTIONS -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <div class="bg-slate-800 p-1 rounded-xl border border-slate-700 flex items-center text-xs font-semibold">
+          <button id="btnViewTasks" onclick="switchDatasetMode('TASKS')" class="px-3 py-1.5 rounded-lg bg-indigoBrand text-white transition">
+            Demandas do Board (Fluxo)
+          </button>
+          <button id="btnViewEpics" onclick="switchDatasetMode('EPICS')" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition">
+            Mapa dos 41 Épicos (CSV)
+          </button>
+        </div>
+
+        <button onclick="toggleJqlModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center gap-2 transition">
+          <span>⚡</span> Comandos JQL & Rovo
+        </button>
+
+        <button onclick="downloadCurrentCSV()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center gap-2 transition">
+          <span>📥</span> Baixar CSV Modelo (DES)
+        </button>
+
+        <label for="fileInput" class="cursor-pointer px-4 py-2 rounded-xl bg-emeraldBrand hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition">
+          <span>📂</span> Subir CSV / Excel do Jira
+          <input id="fileInput" type="file" accept=".csv,.xlsx,.xls" class="hidden" onchange="handleFileUpload(event)" />
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-[1640px] w-full mx-auto px-6 py-6 flex-1 space-y-6">
+
+    <!-- BANNER DRAG & DROP -->
+    <section id="dropZone" class="bento-card p-4 bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950 text-white border-none">
+      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">Complementaridade na Rotina • Design Marketing (DES)</span>
+          </div>
+          <p class="text-sm text-slate-300 max-w-4xl">
+            Use o chat do <strong>Jira Rovo</strong> para perguntas rápidas do dia a dia e os filtros <strong>JQL</strong> para baixar a listagem completa do board <strong>Design Marketing</strong> em CSV/Excel. Basta soltar o arquivo exportado aqui para atualizar os gráficos por <strong>Épico, Status, Frente (`[ECOM]`, `[Trade]`, `[Social]`) e Distribuição do Time</strong>.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 text-xs font-mono shrink-0">
+          <div class="px-3 py-2 rounded-lg bg-slate-800/90 border border-slate-700 text-slate-300">
+            1. Filtro JQL no Jira
+          </div>
+          <span class="text-slate-500">→</span>
+          <div class="px-3 py-2 rounded-lg bg-slate-800/90 border border-slate-700 text-slate-300">
+            2. Botão "Exportar CSV"
+          </div>
+          <span class="text-slate-500">→</span>
+          <div class="px-3 py-2 rounded-lg bg-emeraldBrand/20 border border-emeraldBrand/40 text-emerald-300 font-semibold">
+            3. Solte o CSV aqui
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTERS BAR -->
+    <section class="bento-card p-4 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-3 flex-1">
+        <div class="flex flex-col">
+          <label class="text-[11px] font-bold uppercase text-slate-400 mb-1">Épico / Marca Associada</label>
+          <select id="filterEpic" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-indigoBrand max-w-[260px]">
+            <option value="ALL">Todos os Épicos</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-[11px] font-bold uppercase text-slate-400 mb-1">Coluna do Board (Status)</label>
+          <select id="filterStatus" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-indigoBrand">
+            <option value="ALL">Todas as Colunas</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-[11px] font-bold uppercase text-slate-400 mb-1">Categoria de Status</label>
+          <select id="filterCategory" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-indigoBrand">
+            <option value="ALL">Todas as Categorias</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-[11px] font-bold uppercase text-slate-400 mb-1">Responsável (Assignee)</label>
+          <select id="filterAssignee" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-indigoBrand">
+            <option value="ALL">Todo o Time</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col flex-1 min-w-[200px]">
+          <label class="text-[11px] font-bold uppercase text-slate-400 mb-1">Busca Rápida (DES-XXXX, [ECOM], [Trade], PNLD...)</label>
+          <input id="filterSearch" type="text" oninput="applyFilters()" placeholder="Digite código DES, tag ou título..." class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm text-slate-700 focus:outline-none focus:border-indigoBrand" />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 self-end">
+        <button onclick="resetFilters()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 border border-slate-200 transition">
+          Limpar Filtros
+        </button>
+      </div>
+    </section>
+
+    <!-- KPI ROW (ESPELHO REAL DO BOARD DESIGN MARKETING) -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <!-- KPI 1 -->
+      <div class="bento-card p-5 border-t-4 border-t-indigoBrand">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Itens no Recorte</span>
+          <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-indigo-50 text-indigoBrand">Board DES</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span id="kpiTotal" class="text-3xl font-bold text-slateDeep">0</span>
+          <span class="text-xs text-slate-500">registros</span>
+        </div>
+        <p id="kpiSub1" class="text-xs text-slate-500 mt-1.5">
+          1.116 concluídos no histórico geral do board
+        </p>
+      </div>
+
+      <!-- KPI 2 -->
+      <div class="bento-card p-5 border-t-4 border-t-skyBrand">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Backlog & Priorizado</span>
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-sky-50 text-skyBrand">Para Fazer</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span id="kpiToDo" class="text-3xl font-bold text-slateDeep">0</span>
+          <span class="text-xs text-slate-500">na fila</span>
+        </div>
+        <p id="kpiSub2" class="text-xs text-slate-500 mt-1.5">
+          Design + Copy & Social priorizados
+        </p>
+      </div>
+
+      <!-- KPI 3 -->
+      <div class="bento-card p-5 border-t-4 border-t-violetBrand">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Em Produção & Saída</span>
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-violet-50 text-violetBrand">Andamento</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span id="kpiInProgress" class="text-3xl font-bold text-violetBrand">0</span>
+          <span class="text-xs text-slate-500">ativos</span>
+        </div>
+        <p id="kpiSub3" class="text-xs text-slate-500 mt-1.5">
+          Andamento + Postar/Disparar + Gráfica
+        </p>
+      </div>
+
+      <!-- KPI 4 -->
+      <div class="bento-card p-5 border-t-4 border-t-emeraldBrand">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Validação & Ajustes</span>
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emeraldBrand">Aprovação</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span id="kpiValidation" class="text-3xl font-bold text-emeraldBrand">0</span>
+          <span class="text-xs text-slate-500">em retorno</span>
+        </div>
+        <p id="kpiSub4" class="text-xs text-slate-500 mt-1.5">
+          Em Validação + Fazer Ajustes + Revisão
+        </p>
+      </div>
+
+      <!-- KPI 5 -->
+      <div class="bento-card p-5 border-t-4 border-t-slate-400">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Stand-By & Arquivo</span>
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600">Pausados</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span id="kpiStandby" class="text-3xl font-bold text-slate-600">0</span>
+          <span class="text-xs text-slate-500">itens</span>
+        </div>
+        <p id="kpiSub5" class="text-xs text-slate-500 mt-1.5">
+          Stand-By + Cancelados E-commerce
+        </p>
+      </div>
+    </section>
+
+    <!-- CHARTS ROW (BENTO GRID 12 COLS) -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      
+      <!-- CHART 1: VOLUME POR COLUNA REAL DO BOARD (5 COLS) -->
+      <div class="bento-card p-5 lg:col-span-5 flex flex-col">
+        <div class="mb-3">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-indigoBrand">Espelho das Colunas do Board</span>
+          <h2 class="text-base font-bold text-slateDeep">Distribuição por Etapa do Fluxo (Status)</h2>
+        </div>
+        <div class="relative flex-1 min-h-[290px]">
+          <canvas id="chartStatusColumns"></canvas>
+        </div>
+      </div>
+
+      <!-- CHART 2: TOP ÉPICOS / MARCAS DEMANDANTES (4 COLS) -->
+      <div class="bento-card p-5 lg:col-span-4 flex flex-col">
+        <div class="mb-3">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-violetBrand">Agrupamento por Épico</span>
+          <h2 class="text-base font-bold text-slateDeep">Concentração de Demandas por Épico / Frente</h2>
+        </div>
+        <div class="relative flex-1 min-h-[290px]">
+          <canvas id="chartEpics"></canvas>
+        </div>
+      </div>
+
+      <!-- CHART 3: TEAM WORKLOAD (FIEL AO PRINT DO JIRA SUMMARY - 3 COLS) -->
+      <div class="bento-card p-5 lg:col-span-3 flex flex-col">
+        <div class="mb-3">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-emeraldBrand">Capacidade da Equipe</span>
+          <h2 class="text-base font-bold text-slateDeep">Team Workload (Distribuição)</h2>
+        </div>
+        <div class="relative flex-1 min-h-[290px]">
+          <canvas id="chartWorkload"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- COMPLETE TABLE -->
+    <section class="bento-card overflow-hidden">
+      <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-indigoBrand">Listagem Completa sem Corte de Linhas</span>
+          <h2 id="tableTitle" class="text-base font-bold text-slateDeep">Itens Mapeados no Espaço Design Marketing (DES)</h2>
+        </div>
+        <span id="tableCountLabel" class="text-xs font-mono bg-slate-100 text-slate-600 px-3 py-1 rounded-full">
+          Exibindo 0 registros
+        </span>
+      </div>
+
+      <div class="overflow-x-auto max-h-[460px]">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-slate-50 sticky top-0 z-10 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-500">
+            <tr>
+              <th class="py-3 px-4">Chave</th>
+              <th class="py-3 px-4">Resumo / Demanda</th>
+              <th class="py-3 px-4">Épico / Marca Associada</th>
+              <th class="py-3 px-4">Coluna (Status)</th>
+              <th class="py-3 px-4">Categoria de Status</th>
+              <th class="py-3 px-4">Frente Identificada</th>
+              <th class="py-3 px-4">Responsável</th>
+              <th class="py-3 px-4">Data / Prazo</th>
+            </tr>
+          </thead>
+          <tbody id="ticketTableBody" class="divide-y divide-slate-100 text-sm text-slate-700">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: COMANDOS JQL & ROVO PARA O BOARD DES -->
+  <div id="jqlModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full border border-slate-200 shadow-2xl overflow-hidden">
+      <div class="bg-slateDeep text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-widest text-indigo-400">Faça Você Mesmo • Space: Design Marketing (DES)</span>
+          <h3 class="text-lg font-bold">Comandos Prontos para Extrair o CSV no Jira</h3>
+        </div>
+        <button onclick="toggleJqlModal()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+      </div>
+
+      <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+        <div class="p-4 rounded-xl bg-indigo-50 border border-indigo-100 text-xs text-slate-700 space-y-1">
+          <p class="font-bold text-indigoBrand uppercase">Como usar o botão nativo do Jira em 3 cliques:</p>
+          <p>1. Copie um dos comandos abaixo e cole na busca avançada do Jira (<strong>Filtros &gt; Ver todos os itens &gt; Modo JQL</strong>) ou peça ao <strong>Rovo</strong> para abrir a pesquisa.</p>
+          <p>2. No canto superior direito da tela do Jira, clique no botão padrão <strong>Exportar &gt; Exportar CSV (meus padrões)</strong>.</p>
+          <p>3. Arraste o arquivo CSV baixado para qualquer lugar deste painel.</p>
+        </div>
+
+        <div class="space-y-3">
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold uppercase text-indigoBrand">1. JQL: Todas as Demandas Ativas do Board (Sem Épicos e Sem Concluídos Antigos)</span>
+              <button onclick="copyText('jqlActive')" class="text-xs font-semibold text-indigoBrand hover:underline">Copiar JQL</button>
+            </div>
+            <code id="jqlActive" class="block font-mono text-xs bg-slateDeep text-slate-100 p-3 rounded-lg overflow-x-auto">project = "DES" AND issuetype != Epic AND statusCategory != Done ORDER BY status ASC, duedate ASC</code>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold uppercase text-emeraldBrand">2. JQL: Fechamento Mensal Completo (Incluindo Concluídos nos últimos 30 dias)</span>
+              <button onclick="copyText('jqlMonthly')" class="text-xs font-semibold text-indigoBrand hover:underline">Copiar JQL</button>
+            </div>
+            <code id="jqlMonthly" class="block font-mono text-xs bg-slateDeep text-slate-100 p-3 rounded-lg overflow-x-auto">project = "DES" AND issuetype != Epic AND (statusCategory != Done OR updated >= -30d) ORDER BY parent ASC, status ASC</code>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold uppercase text-violetBrand">3. Prompt para o Chat do Jira Rovo (Gera a busca pronta)</span>
+              <button onclick="copyText('promptRovo')" class="text-xs font-semibold text-indigoBrand hover:underline">Copiar Prompt Rovo</button>
+            </div>
+            <code id="promptRovo" class="block font-mono text-xs bg-slateDeep text-slate-100 p-3 rounded-lg overflow-x-auto">"Rovo, monte um filtro JQL do projeto Design Marketing (DES) com todas as demandas em aberto ou concluídas neste mês, exibindo as colunas Chave, Resumo, Status, Categoria de Status, Item Pai (Épico), Responsável e Data Limite, e me dê o link para abrir na Pesquisa de Itens para eu exportar em CSV."</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+        <button onclick="toggleJqlModal()" class="px-4 py-2 rounded-xl bg-slateDeep text-white text-xs font-semibold">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT ENGINE -->
+  <script>
+    // 1. OS 41 ÉPICOS REAIS EXTRAÍDOS DO SEU CSV
+    const EPICS_FROM_CSV = [
+      { key: "DES-2175", summary: "🌎 Site Órbita", epic: "🌎 Site Órbita", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
+      { key: "DES-888", summary: "⛔️ CARDS EM STAND BY", epic: "⛔️ CARDS EM STAND BY", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
+      { key: "DES-2166", summary: "🟢 E-commerce Novembro", epic: "🟢 E-commerce Novembro", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "Nov 2026" },
+      { key: "DES-2145", summary: "🤓 Faculdade Amplia", epic: "🤓 Faculdade Amplia", status: "ÉPICOS", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "Out 2026" },
+      { key: "DES-2074", summary: "👩‍🏫 Viver", epic: "👩‍🏫 Viver", status: "ÉPICOS", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "Out 2026" },
+      { key: "DES-2024", summary: "🟠 Demandas canceladas E-commerce (Mkt avaliar exclusão)", epic: "🟠 Demandas canceladas E-commerce", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
+      { key: "DES-695", summary: "⚪️ Redes Sociais", epic: "⚪️ Redes Sociais", status: "📋POSTAR/DISPARAR", category: "Em Andamento", assignee: "Natalia Nogueira", dueDate: "Out 2026" },
+      { key: "DES-2012", summary: "🟢 E-commerce Outubro", epic: "🟢 E-commerce Outubro", status: "ÉPICOS", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "Out 2026" },
+      { key: "DES-1856", summary: "🎙️Podcast - Ciclo do Saber", epic: "🎙️Podcast - Ciclo do Saber", status: "ÉPICOS", category: "Para Fazer", assignee: "Samuel Ramires", dueDate: "Out 2026" },
+      { key: "DES-1912", summary: "🎓Universidade Mletras", epic: "🎓Universidade Mletras", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "Out 2026" },
+      { key: "DES-1852", summary: "🟢 E-commerce Setembro", epic: "🟢 E-commerce Setembro", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "Set 2026" },
+      { key: "DES-1119", summary: "🟢 Imagens sites | E-commerce & Institucional", epic: "🟢 Imagens sites | E-commerce", status: "ÉPICOS", category: "Para Fazer", assignee: "Ana Paula Stein", dueDate: "—" },
+      { key: "DES-710", summary: "🔵 Corporativo", epic: "🔵 Corporativo", status: "ÉPICOS", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "—" },
+      { key: "DES-690", summary: "🟡 Relações com o Mercado 2026", epic: "🟡 Relações com o Mercado 2026", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "2026" },
+      { key: "DES-1206", summary: "🟡 PNLD Equidade", epic: "🟡 PNLD Equidade", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
+      { key: "DES-1199", summary: "🔴 Branding Multiverso das Letras", epic: "🔴 Branding Multiverso das Letras", status: "ÉPICOS", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "Out 2026" },
+      { key: "DES-1198", summary: "🟠 Estação Literária", epic: "🟠 Estação Literária", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
+      { key: "DES-1197", summary: "🟣 Clássicos ao Quadrado", epic: "🟣 Clássicos ao Quadrado", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
+      { key: "DES-1196", summary: "🟡 Lobo de Cueca", epic: "🟡 Lobo de Cueca", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
+      { key: "DES-1022", summary: "🟪 LP Comunidade Leitura em Família", epic: "🟪 LP Comunidade Leitura em Família", status: "ÉPICOS", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "—" },
+      { key: "DES-937", summary: "🟣 Fórum ANEC 2026", epic: "🟣 Fórum ANEC 2026", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "2026" },
+      { key: "DES-832", summary: "🟤 Memento - O poder de viver o hoje", epic: "🟤 Memento - O poder de viver o hoje", status: "ÉPICOS", category: "Para Fazer", assignee: "Natalia Nogueira", dueDate: "—" },
+      { key: "DES-755", summary: "🔴 PNLD 2027 Anos Iniciais", epic: "🔴 PNLD 2027 Anos Iniciais", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "2026" },
+      { key: "DES-718", summary: "🟡 Stellare", epic: "🟡 Stellare", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
+      { key: "DES-707", summary: "⚫️ Implementação Pedagógica", epic: "⚫️ Implementação Pedagógica", status: "ÉPICOS", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
+      { key: "DES-693", summary: "🟠 PNLD Literário 2026", epic: "🟠 PNLD Literário 2026", status: "ÉPICOS", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "2026" },
+      { key: "DES-644", summary: "🔵 Prêmio Multiverso de Literatura 2026", epic: "🔵 Prêmio Multiverso de Literatura 2026", status: "ÉPICOS", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "Out 2026" },
+      { key: "DES-1876", summary: "[PNLD 2027] Revista Educação - News 2", epic: "🔴 PNLD 2027 Anos Iniciais", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "Concluído" },
+      { key: "DES-1658", summary: "🟢 E-commerce Agosto", epic: "🟢 E-commerce Agosto", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "Ago 2026" },
+      { key: "DES-1580", summary: "🟢 E-commerce Julho", epic: "🟢 E-commerce Julho", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "Jul 2026" },
+      { key: "DES-1471", summary: "🟢 E-commerce Junho", epic: "🟢 E-commerce Junho", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "Jun 2026" },
+      { key: "DES-1283", summary: "🟢 E-commerce Maio", epic: "🟢 E-commerce Maio", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "Mai 2026" },
+      { key: "DES-2067", summary: "🟣 [E-COMM] Demandas em Stand By", epic: "⛔️ CARDS EM STAND BY", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Unassigned", dueDate: "Concluído" },
+      { key: "DES-1009", summary: "🟢 E-commerce Abril", epic: "🟢 E-commerce Abril", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "Abr 2026" },
+      { key: "DES-1581", summary: "📖 Conta de novo (clube de assinatura)", epic: "📖 Conta de novo", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Ana Paula Stein", dueDate: "Concluído" },
+      { key: "DES-702", summary: "🟢 E-commerce Fevereiro", epic: "🟢 E-commerce Fevereiro", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "Fev 2026" },
+      { key: "DES-585", summary: "🟢 E-commerce Janeiro", epic: "🟢 E-commerce Janeiro", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "Jan 2026" },
+      { key: "DES-1093", summary: "🟢 BETT 2026", epic: "🟡 Relações com o Mercado 2026", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "Mai 2026" },
+      { key: "DES-831", summary: "🟢 GEduc 2026", epic: "🟡 Relações com o Mercado 2026", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "Abr 2026" },
+      { key: "DES-1862", summary: "[FLIP] Apresentação Encontro", epic: "🟡 Relações com o Mercado 2026", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Ana Paula Stein", dueDate: "Concluído" },
+      { key: "DES-773", summary: "🟢 Imagens | LP Mais afiliados [E-comm] - FREELA", epic: "🟢 Imagens sites | E-commerce", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Freela", dueDate: "Concluído" }
+    ];
+
+    // 2. DEMANDAS REAIS DO BOARD (EXTRAÍDAS DAS CAPTURAS DE TELA DO BOARD DES)
+    const BOARD_TASKS = [
+      // BACKLOG COPY + SOCIAL
+      { key: "DES-2055", summary: "[Trade] Anúncio Revista Educação/ Nov/Dez", epic: "🟡 Relações com o Mercado 2026", status: "⬛ BACKLOG COPY + SOCIAL", category: "Para Fazer", assignee: "Unassigned", dueDate: "30 Out 2026" },
+      { key: "DES-2173", summary: "[ECOM] Vídeo Livros do Mês", epic: "🟢 E-commerce Novembro", status: "⬛ BACKLOG COPY + SOCIAL", category: "Para Fazer", assignee: "Unassigned", dueDate: "29 Out 2026" },
+      // BACKLOG DESIGN
+      { key: "DES-2138", summary: "[Viver] Apresentação PPT - Formação final do Projeto Viver/DF", epic: "👩‍🏫 Viver", status: "⚫ BACKLOG DESIGN", category: "Para Fazer", assignee: "Unassigned", dueDate: "27 Out 2026" },
+      { key: "DES-2081", summary: "[Ciclo do Saber] Temporada 2", epic: "🎙️Podcast - Ciclo do Saber", status: "⚫ BACKLOG DESIGN", category: "Para Fazer", assignee: "Unassigned", dueDate: "30 Out 2026" },
+      { key: "DES-1923", summary: "[Universidade] Cantinela: ppt, gc e transições animadas", epic: "🎓Universidade Mletras", status: "⚫ BACKLOG DESIGN", category: "Para Fazer", assignee: "Unassigned", dueDate: "30 Out 2026" },
+      // PRIORIZADO DESIGN
+      { key: "DES-2150", summary: "[PNLD EI] E-mail mkt 5", epic: "🟠 PNLD Literário 2026", status: "🔵 PRIORIZADO DESIGN", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "19 Out 2026" },
+      { key: "DES-2061", summary: "[ECOM] Emkt Livros sobre curiosidades e aprendizados", epic: "🟢 E-commerce Outubro", status: "🔵 PRIORIZADO DESIGN", category: "Para Fazer", assignee: "Samuel Ramires", dueDate: "19 Out 2026" },
+      { key: "DES-2139", summary: "[Ciclo do Saber] Thumbs temporada 2", epic: "🎙️Podcast - Ciclo do Saber", status: "🔵 PRIORIZADO DESIGN", category: "Para Fazer", assignee: "Samuel Ramires", dueDate: "19 Out 2026" },
+      // PRIORIZADO COPY + SOCIAL
+      { key: "DES-2066", summary: "[ECOM] Conta de Novo - Legendagem dos vídeos - Mapa de Leitura", epic: "🟢 E-commerce Outubro", status: "🟦 PRIORIZADO COPY + SOCIAL", category: "Para Fazer", assignee: "Natalia Nogueira", dueDate: "09 Out 2026" },
+      { key: "DES-2120", summary: "[ECOM] Vídeo Black Friday", epic: "🟢 E-commerce Outubro", status: "🟦 PRIORIZADO COPY + SOCIAL", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "21 Out 2026" },
+      { key: "DES-2158", summary: "[Social] Ciclo do Saber Temp. 1 - Post Fotos/Backstage", epic: "⚪️ Redes Sociais", status: "🟦 PRIORIZADO COPY + SOCIAL", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "19 Out 2026" },
+      // ANDAMENTO DESIGN
+      { key: "DES-2143", summary: "[Social | Novembro] ÓRBITA - 6 estáticos + 2 carrosséis + 18 desdobres Stories", epic: "⚪️ Redes Sociais", status: "🟡 ANDAMENTO DESIGN", category: "Em Andamento", assignee: "Samuel Ramires", dueDate: "19 Out 2026" },
+      { key: "DES-2136", summary: "[Viver] Apresentação PPT Mato Grosso (TDAH)", epic: "👩‍🏫 Viver", status: "🟡 ANDAMENTO DESIGN", category: "Em Andamento", assignee: "Wilson Junior", dueDate: "20 Out 2026" },
+      // ANDAMENTO FREELAS
+      { key: "DES-1985", summary: "[Campanha da Fraternidade 2027] E-mail", epic: "🟡 Relações com o Mercado 2026", status: "🗒️ ANDAMENTO FREELAS", category: "Em Andamento", assignee: "Unassigned", dueDate: "28 Set 2026" },
+      { key: "DES-1474", summary: "[Corporativo] Criação de marcações de setores/departamentos", epic: "🔵 Corporativo", status: "🗒️ ANDAMENTO FREELAS", category: "Em Andamento", assignee: "Natalia Nogueira", dueDate: "09 Out 2026" },
+      { key: "DES-2096", summary: "[Trade] Material de PDV - Jaqueiras (Recife)", epic: "🟡 Relações com o Mercado 2026", status: "🗒️ ANDAMENTO FREELAS", category: "Em Andamento", assignee: "Ana Paula Stein", dueDate: "30 Out 2026" },
+      // EM VALIDAÇÃO
+      { key: "DES-2123", summary: "[ECOM] Bubbles Compra por Idade", epic: "🟢 E-commerce Outubro", status: "🟢 EM VALIDAÇÃO", category: "Em Andamento", assignee: "Wilson Junior", dueDate: "14 Out 2026" },
+      { key: "DES-2146", summary: "[Amplia] Template de PPT", epic: "🤓 Faculdade Amplia", status: "🟢 EM VALIDAÇÃO", category: "Em Andamento", assignee: "Samuel Ramires", dueDate: "16 Out 2026" },
+      { key: "DES-2144", summary: "[Amplia] Assinaturas de E-mail", epic: "🤓 Faculdade Amplia", status: "🟢 EM VALIDAÇÃO", category: "Em Andamento", assignee: "Samuel Ramires", dueDate: "16 Out 2026" },
+      { key: "DES-2147", summary: "[Amplia] Papel timbrado", epic: "🤓 Faculdade Amplia", status: "🟢 EM VALIDAÇÃO", category: "Em Andamento", assignee: "Wilson Junior", dueDate: "16 Out 2026" },
+      // FAZER AJUSTES
+      { key: "DES-2010", summary: "[Prêmio Multiverso] E-mail outubro", epic: "🔵 Prêmio Multiverso de Literatura 2026", status: "🔴 FAZER AJUSTES", category: "Em Andamento", assignee: "Wilson Junior", dueDate: "15 Out 2026" },
+      { key: "DES-1971", summary: "Manual de Marca: Grupo Multiverso das Letras", epic: "🔴 Branding Multiverso das Letras", status: "🔴 FAZER AJUSTES", category: "Em Andamento", assignee: "Wilson Junior", dueDate: "09 Out 2026" },
+      { key: "DES-2157", summary: "[ECOM] Banner Lançamento O lobo de cueca 2", epic: "🟢 E-commerce Outubro", status: "🔴 FAZER AJUSTES", category: "Em Andamento", assignee: "Samuel Ramires", dueDate: "16 Out 2026" },
+      // POSTAR / DISPARAR
+      { key: "DES-1969", summary: "[Multiverso da Leitura] Thumb + Post + Story + GCs - 10 peças", epic: "⚪️ Redes Sociais", status: "📋 POSTAR/DISPARAR", category: "Em Andamento", assignee: "Natalia Nogueira", dueDate: "27 Out 2026" },
+      { key: "DES-2070", summary: "[ECOM] Vídeo Livros do Mês", epic: "🟢 E-commerce Outubro", status: "📋 POSTAR/DISPARAR", category: "Em Andamento", assignee: "Natalia Nogueira", dueDate: "30 Set 2026" },
+      // GRÁFICA
+      { key: "DES-1932", summary: "[Evento] Banner impresso | O vento ventou no alfabeto", epic: "🟡 Relações com o Mercado 2026", status: "🖨️ GRÁFICA", category: "Em Andamento", assignee: "Ana Paula Stein", dueDate: "28 Ago 2026" },
+      { key: "DES-1873", summary: "[CORPORATIVO] Adesivos para portas de entrada", epic: "🔵 Corporativo", status: "🖨️ GRÁFICA", category: "Em Andamento", assignee: "Ana Paula Stein", dueDate: "13 Ago 2026" },
+      { key: "DES-1914", summary: "[Trade] Lobo de Cueca: Adesivo de Amarelinha (adaptação arte)", epic: "🟡 Relações com o Mercado 2026", status: "🖨️ GRÁFICA", category: "Em Andamento", assignee: "Ana Paula Stein", dueDate: "18 Set 2026" },
+      // STAND-BY & LINKS & CANCELADOS
+      { key: "DES-473", summary: "[MEMENTO] Thumbs", epic: "🟤 Memento - O poder de viver o hoje", status: "⛔ STAND-BY", category: "Para Fazer", assignee: "Natalia Nogueira", dueDate: "—" },
+      { key: "DES-972", summary: "Documentação padronização LP", epic: "🟢 E-commerce Outubro", status: "⛔ STAND-BY", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "18 Mar 2026" },
+      { key: "DES-646", summary: "[Interno] Atualizar SLA - Banners Multiletras", epic: "🔵 Corporativo", status: "⛔ STAND-BY", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "—" },
+      { key: "DES-731", summary: "STAND BY - Emkt - Janvanês", epic: "⛔️ CARDS EM STAND BY", status: "⛔ STAND-BY", category: "Para Fazer", assignee: "Unassigned", dueDate: "20 Fev 2026" },
+      { key: "DES-151", summary: "Toolkit das marcas", epic: "🔴 Branding Multiverso das Letras", status: "LINKS IMPORTANTES", category: "Para Fazer", assignee: "Unassigned", dueDate: "—" },
+      { key: "DES-1649", summary: "[Ecom] Imagem whatsapp", epic: "🟠 Demandas canceladas E-commerce", status: "🚫🛒 CANCELADOS E-COMMERCE", category: "Para Fazer", assignee: "Natalia Nogueira", dueDate: "29 Jun 2026" },
+      { key: "DES-450", summary: "[E-commerce] Adaptação de vídeo", epic: "🟠 Demandas canceladas E-commerce", status: "🚫🛒 CANCELADOS E-COMMERCE", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "23 Jan 2026" },
+      { key: "DES-607", summary: "Novos banners páginas de categoria", epic: "🟠 Demandas canceladas E-commerce", status: "🚫🛒 CANCELADOS E-COMMERCE", category: "Para Fazer", assignee: "Wilson Junior", dueDate: "20 Jan 2026" },
+      // CONCLUÍDOS RECENTES (AMOSTRA DO BOARD)
+      { key: "DES-814", summary: "[Multiletras] Posts Bloquinho de Leitura", epic: "🟢 E-commerce Fevereiro", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "03 Fev 2026" },
+      { key: "DES-2004", summary: "[PNLD 2026] E-mail roteiro de leitura", epic: "🟠 PNLD Literário 2026", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "17 Set 2026" },
+      { key: "DES-2083", summary: "[PNLD 2026] E-mail sobre o autor", epic: "🟠 PNLD Literário 2026", status: "✅ CONCLUÍDO", category: "Concluído", assignee: "Wilson Junior", dueDate: "30 Set 2026" }
+    ];
+
+    let currentMode = 'TASKS';
+    let activeDataset = [];
+    let chartStatusInstance = null;
+    let chartEpicsInstance = null;
+    let chartWorkloadInstance = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setupDragAndDrop();
+      switchDatasetMode('TASKS');
+    });
+
+    function switchDatasetMode(mode) {
+      currentMode = mode;
+      const btnTasks = document.getElementById('btnViewTasks');
+      const btnEpics = document.getElementById('btnViewEpics');
+
+      if (mode === 'TASKS') {
+        activeDataset = [...BOARD_TASKS];
+        btnTasks.className = "px-3 py-1.5 rounded-lg bg-indigoBrand text-white transition";
+        btnEpics.className = "px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition";
+        document.getElementById('dataSourceBadge').textContent = `Fluxo do Board (${activeDataset.length} demandas mapeadas)`;
+        document.getElementById('tableTitle').textContent = "Demandas Operacionais Mapeadas no Board Design Marketing (DES)";
+      } else {
+        activeDataset = [...EPICS_FROM_CSV];
+        btnEpics.className = "px-3 py-1.5 rounded-lg bg-indigoBrand text-white transition";
+        btnTasks.className = "px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition";
+        document.getElementById('dataSourceBadge').textContent = `CSV Oficial Carregado (41 Épicos)`;
+        document.getElementById('tableTitle').textContent = "Mapa Completo dos 41 Épicos (Arquivo chave-resumo-status-categoria-.csv)";
+      }
+
+      populateFilters(activeDataset);
+      resetFilters();
+    }
+
+    function detectFrontFromSummary(summary, epic) {
+      const text = `${summary} ${epic}`.toLowerCase();
+      if (text.includes('[trade]') || text.includes('[evento') || text.includes('pdv') || text.includes('bett') || text.includes('geduc') || text.includes('mercado')) return 'Trade & Eventos';
+      if (text.includes('[ecom') || text.includes('e-comm') || text.includes('black friday') || text.includes('afiliados')) return 'E-commerce';
+      if (text.includes('[social') || text.includes('redes sociais') || text.includes('story') || text.includes('post')) return 'Social & Copy';
+      if (text.includes('pnld') || text.includes('viver') || text.includes('amplia') || text.includes('universidade') || text.includes('ciclo')) return 'Educacional & PNLD';
+      if (text.includes('branding') || text.includes('corporativo') || text.includes('manual de marca')) return 'Institucional & Branding';
+      return 'Design & Criação';
+    }
+
+    function populateFilters(items) {
+      const epics = [...new Set(items.map(i => i.epic))].sort();
+      const statuses = [...new Set(items.map(i => i.status))].sort();
+      const categories = [...new Set(items.map(i => i.category))].sort();
+      const assignees = [...new Set(items.map(i => i.assignee))].sort();
+
+      fillSelect('filterEpic', 'Todos os Épicos / Marcas', epics);
+      fillSelect('filterStatus', 'Todas as Colunas (Status)', statuses);
+      fillSelect('filterCategory', 'Todas as Categorias', categories);
+      fillSelect('filterAssignee', 'Todo o Time', assignees);
+    }
+
+    function fillSelect(id, defaultLabel, list) {
+      const sel = document.getElementById(id);
+      sel.innerHTML = `<option value="ALL">${defaultLabel}</option>`;
+      list.forEach(val => {
+        if (val) {
+          const opt = document.createElement('option');
+          opt.value = val;
+          opt.textContent = val;
+          sel.appendChild(opt);
+        }
+      });
+    }
+
+    function resetFilters() {
+      document.getElementById('filterEpic').value = 'ALL';
+      document.getElementById('filterStatus').value = 'ALL';
+      document.getElementById('filterCategory').value = 'ALL';
+      document.getElementById('filterAssignee').value = 'ALL';
+      document.getElementById('filterSearch').value = '';
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const eVal = document.getElementById('filterEpic').value;
+      const sVal = document.getElementById('filterStatus').value;
+      const cVal = document.getElementById('filterCategory').value;
+      const aVal = document.getElementById('filterAssignee').value;
+      const qVal = document.getElementById('filterSearch').value.toLowerCase().trim();
+
+      const filtered = activeDataset.filter(item => {
+        const matchE = (eVal === 'ALL' || item.epic === eVal);
+        const matchS = (sVal === 'ALL' || item.status === sVal);
+        const matchC = (cVal === 'ALL' || item.category === cVal);
+        const matchA = (aVal === 'ALL' || item.assignee === aVal);
+        const matchQ = !qVal ||
+          item.key.toLowerCase().includes(qVal) ||
+          item.summary.toLowerCase().includes(qVal) ||
+          item.epic.toLowerCase().includes(qVal) ||
+          item.status.toLowerCase().includes(qVal);
+        return matchE && matchS && matchC && matchA && matchQ;
+      });
+
+      updateKPIs(filtered);
+      updateCharts(filtered);
+      updateTable(filtered);
+    }
+
+    function updateKPIs(items) {
+      const total = items.length;
+
+      const toDo = items.filter(i => {
+        const s = i.status.toUpperCase();
+        return s.includes('BACKLOG') || s.includes('PRIORIZADO') || s === 'ÉPICOS';
+      }).length;
+
+      const inProg = items.filter(i => {
+        const s = i.status.toUpperCase();
+        return s.includes('ANDAMENTO') || s.includes('POSTAR') || s.includes('GRÁFICA');
+      }).length;
+
+      const validation = items.filter(i => {
+        const s = i.status.toUpperCase();
+        return s.includes('VALIDA') || s.includes('AJUSTE') || s.includes('REVIS');
+      }).length;
+
+      const standby = items.filter(i => {
+        const s = i.status.toUpperCase();
+        return s.includes('STAND') || s.includes('CANCELAD') || s.includes('LINKS');
+      }).length;
+
+      const done = items.filter(i => i.status.toUpperCase().includes('CONCLU') || i.category === 'Concluído').length;
+
+      document.getElementById('kpiTotal').textContent = total;
+      document.getElementById('kpiSub1').textContent = `${done} concluídos neste recorte (1.116 no board geral)`;
+      document.getElementById('kpiToDo').textContent = toDo;
+      document.getElementById('kpiInProgress').textContent = inProg;
+      document.getElementById('kpiValidation').textContent = validation;
+      document.getElementById('kpiStandby').textContent = standby;
+    }
+
+    function updateCharts(items) {
+      // 1. STATUS COLUMNS CHART
+      const statusCounts = {};
+      items.forEach(i => { statusCounts[i.status] = (statusCounts[i.status] || 0) + 1; });
+      const sLabels = Object.keys(statusCounts);
+      const sData = Object.values(statusCounts);
+
+      if (chartStatusInstance) chartStatusInstance.destroy();
+      chartStatusInstance = new Chart(document.getElementById('chartStatusColumns'), {
+        type: 'bar',
+        data: {
+          labels: sLabels,
+          datasets: [{
+            label: 'Itens na Coluna',
+            data: sData,
+            backgroundColor: sLabels.map(l => {
+              const u = l.toUpperCase();
+              if (u.includes('CONCLU')) return '#059669';
+              if (u.includes('VALIDA') || u.includes('AJUSTE')) return '#0284C7';
+              if (u.includes('STAND') || u.includes('CANCEL')) return '#64748B';
+              if (u.includes('ANDAMENTO') || u.includes('GRÁFICA') || u.includes('POSTAR')) return '#7C3AED';
+              return '#4F46E5';
+            }),
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, ticks: { precision: 0 } },
+            y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+          }
+        }
+      });
+
+      // 2. TOP EPICS CHART
+      const epicCounts = {};
+      items.forEach(i => { epicCounts[i.epic] = (epicCounts[i.epic] || 0) + 1; });
+      const sortedEpics = Object.entries(epicCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+      if (chartEpicsInstance) chartEpicsInstance.destroy();
+      chartEpicsInstance = new Chart(document.getElementById('chartEpics'), {
+        type: 'bar',
+        data: {
+          labels: sortedEpics.map(e => e[0].length > 28 ? e[0].slice(0, 28) + '…' : e[0]),
+          datasets: [{
+            label: 'Itens Vinculados',
+            data: sortedEpics.map(e => e[1]),
+            backgroundColor: '#7C3AED',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, ticks: { precision: 0 } },
+            y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+          }
+        }
+      });
+
+      // 3. TEAM WORKLOAD CHART (Reflecting real Jira Summary distribution)
+      const assigneeCounts = {};
+      items.forEach(i => { assigneeCounts[i.assignee || 'Unassigned'] = (assigneeCounts[i.assignee || 'Unassigned'] || 0) + 1; });
+      const aLabels = Object.keys(assigneeCounts);
+      const aData = Object.values(assigneeCounts);
+
+      if (chartWorkloadInstance) chartWorkloadInstance.destroy();
+      chartWorkloadInstance = new Chart(document.getElementById('chartWorkload'), {
+        type: 'doughnut',
+        data: {
+          labels: aLabels,
+          datasets: [{
+            data: aData,
+            backgroundColor: ['#4F46E5', '#94A3B8', '#059669', '#7C3AED', '#0284C7', '#F59E0B'],
+            borderWidth: 2,
+            borderColor: '#FFFFFF'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '62%',
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 11, font: { size: 11 } } }
+          }
+        }
+      });
+    }
+
+    function updateTable(items) {
+      const tbody = document.getElementById('ticketTableBody');
+      document.getElementById('tableCountLabel').textContent = `Exibindo ${items.length} itens do board DES`;
+      tbody.innerHTML = '';
+
+      items.forEach(item => {
+        const front = detectFrontFromSummary(item.summary, item.epic);
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50/90 transition';
+
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-mono text-xs font-semibold text-indigoBrand whitespace-nowrap">${item.key}</td>
+          <td class="py-3 px-4 font-medium text-slateDeep max-w-md truncate" title="${item.summary}">${item.summary}</td>
+          <td class="py-3 px-4 whitespace-nowrap"><span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">${item.epic}</span></td>
+          <td class="py-3 px-4 whitespace-nowrap">${formatStatusPill(item.status)}</td>
+          <td class="py-3 px-4 whitespace-nowrap">${formatCategoryPill(item.category)}</td>
+          <td class="py-3 px-4 text-xs text-slate-600 whitespace-nowrap">${front}</td>
+          <td class="py-3 px-4 text-xs font-medium text-slate-700 whitespace-nowrap">${item.assignee}</td>
+          <td class="py-3 px-4 text-xs font-mono text-slate-500 whitespace-nowrap">${item.dueDate || '—'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function formatStatusPill(status) {
+      const u = (status || '').toUpperCase();
+      if (u.includes('CONCLU')) return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emeraldBrand border border-emerald-200">${status}</span>`;
+      if (u.includes('VALIDA') || u.includes('AJUSTE')) return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-skyBrand border border-sky-200">${status}</span>`;
+      if (u.includes('ANDAMENTO') || u.includes('POSTAR') || u.includes('GRÁFICA')) return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-violet-50 text-violetBrand border border-violet-200">${status}</span>`;
+      if (u.includes('STAND') || u.includes('CANCEL')) return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">${status}</span>`;
+      return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 text-indigoBrand border border-indigo-200">${status}</span>`;
+    }
+
+    function formatCategoryPill(cat) {
+      const c = (cat || '').toLowerCase();
+      if (c.includes('conclu')) return `<span class="text-xs font-semibold text-emeraldBrand">● Concluído</span>`;
+      if (c.includes('andamento')) return `<span class="text-xs font-semibold text-indigoBrand">● Em Andamento</span>`;
+      return `<span class="text-xs font-semibold text-slate-500">● Para Fazer</span>`;
+    }
+
+    // UNIVERSAL CSV / XLSX UPLOAD HANDLER (ACCEPTS YOUR EXACT 4-COLUMN CSV OR FULL JIRA EXPORT)
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) processUploadedFile(file);
+    }
+
+    function processUploadedFile(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonRows = XLSX.utils.sheet_to_json(firstSheet, { defval: "" });
+
+        if (!jsonRows.length) {
+          alert("O arquivo selecionado está vazio.");
+          return;
+        }
+
+        activeDataset = jsonRows.map((row, idx) => {
+          const getVal = (candidates, fallback) => {
+            for (const k of Object.keys(row)) {
+              const cleanK = k.toLowerCase().trim();
+              if (candidates.some(c => cleanK === c || cleanK.includes(c))) {
+                return String(row[k]).trim() || fallback;
+              }
+            }
+            return fallback;
+          };
+
+          const key = getVal(['chave', 'issue key', 'key'], `DES-${100 + idx}`);
+          const summary = getVal(['resumo', 'summary', 'título'], 'Item sem título');
+          const status = getVal(['status', 'situação'], 'ÉPICOS');
+          const category = getVal(['categoria de status', 'status category', 'categoria'], 
+            status.toUpperCase().includes('CONCLU') ? 'Concluído' : 'Para Fazer'
+          );
+          const epic = getVal(['item pai', 'parent', 'épico', 'epic link', 'epic name', 'marca'], summary);
+          const assignee = getVal(['responsável', 'assignee', 'atribuído'], 'Time Design Mkt');
+          const dueDate = getVal(['data limite', 'due date', 'prazo', 'vencimento'], '—');
+
+          return { key, summary, epic, status, category, assignee, dueDate };
+        });
+
+        document.getElementById('dataSourceBadge').textContent = `Arquivo: ${file.name} (${activeDataset.length} registros)`;
+        document.getElementById('tableTitle').textContent = `Dados Importados: ${file.name}`;
+        populateFilters(activeDataset);
+        resetFilters();
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function setupDragAndDrop() {
+      const dz = document.getElementById('dropZone');
+      ['dragenter', 'dragover'].forEach(evt => {
+        dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.add('drop-active'); });
+      });
+      ['dragleave', 'drop'].forEach(evt => {
+        dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.remove('drop-active'); });
+      });
+      dz.addEventListener('drop', e => {
+        const file = e.dataTransfer.files[0];
+        if (file) processUploadedFile(file);
+      });
+    }
+
+    function downloadCurrentCSV() {
+      const headers = ["Chave", "Resumo", "Status", "Categoria de Status", "Item Pai", "Responsável", "Data Limite"];
+      const rows = activeDataset.map(i => [
+        i.key, `"${i.summary.replace(/"/g, '""')}"`, `"${i.status}"`, `"${i.category}"`, `"${i.epic.replace(/"/g, '""')}"`, `"${i.assignee}"`, `"${i.dueDate}"`
+      ]);
+      const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "design-marketing-des-export.csv";
+      a.click();
+    }
+
+    function toggleJqlModal() {
+      const modal = document.getElementById('jqlModal');
+      modal.classList.toggle('hidden');
+      modal.classList.toggle('flex');
+    }
+
+    function copyText(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text);
+      alert("Comando copiado!");
+    }
+  </script>
+</body>
+</html>
